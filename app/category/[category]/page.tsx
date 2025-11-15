@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
 interface CategoryPageProps {
-  params: { category: string };
-  searchParams: { page?: string };
+  params: Promise<{ category: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 async function getCategoryQuestions(category: string, page: number = 1) {
@@ -32,13 +32,14 @@ async function getCategoryQuestions(category: string, page: number = 1) {
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
-  if (!isValidCategory(params.category)) {
+  const { category } = await params;
+  if (!isValidCategory(category)) {
     return {
       title: 'Category Not Found',
     };
   }
 
-  const categoryName = formatCategoryName(params.category);
+  const categoryName = formatCategoryName(category);
   return {
     title: `${categoryName} Questions | QuestionAndAnswerHQ`,
     description: `Browse all questions and answers in the ${categoryName} category.`,
@@ -49,16 +50,19 @@ export default async function CategoryPage({
   params,
   searchParams,
 }: CategoryPageProps) {
-  if (!isValidCategory(params.category)) {
+  const { category } = await params;
+  const { page: pageParam } = await searchParams;
+  
+  if (!isValidCategory(category)) {
     notFound();
   }
 
-  const page = parseInt(searchParams.page || '1', 10);
+  const page = parseInt(pageParam || '1', 10);
   const { questions, total, totalPages } = await getCategoryQuestions(
-    params.category,
+    category,
     page
   );
-  const categoryName = formatCategoryName(params.category);
+  const categoryName = formatCategoryName(category);
 
   return (
     <div className="min-h-screen bg-gray-bg">
@@ -97,7 +101,7 @@ export default async function CategoryPage({
           <div className="flex justify-center items-center gap-4">
             {page > 1 && (
               <a
-                href={`/category/${params.category}?page=${page - 1}`}
+                href={`/category/${category}?page=${page - 1}`}
                 className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
               >
                 Previous
@@ -108,7 +112,7 @@ export default async function CategoryPage({
             </span>
             {page < totalPages && (
               <a
-                href={`/category/${params.category}?page=${page + 1}`}
+                href={`/category/${category}?page=${page + 1}`}
                 className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
               >
                 Next

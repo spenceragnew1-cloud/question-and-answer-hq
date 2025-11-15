@@ -48,10 +48,11 @@ async function getQuestions(searchParams: SearchParams) {
 export default async function QuestionsPage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
-  const { questions, total, page, totalPages } = await getQuestions(searchParams);
-  const selectedCategory = searchParams.category;
+  const resolvedSearchParams = await searchParams;
+  const { questions, total, page, totalPages } = await getQuestions(resolvedSearchParams);
+  const selectedCategory = resolvedSearchParams.category;
 
   return (
     <div className="min-h-screen bg-gray-bg">
@@ -126,7 +127,7 @@ export default async function QuestionsPage({
             {page > 1 && (
               <a
                 href={`/questions?${new URLSearchParams({
-                  ...searchParams,
+                  ...resolvedSearchParams,
                   page: String(page - 1),
                 }).toString()}`}
                 className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
@@ -140,7 +141,7 @@ export default async function QuestionsPage({
             {page < totalPages && (
               <a
                 href={`/questions?${new URLSearchParams({
-                  ...searchParams,
+                  ...resolvedSearchParams,
                   page: String(page + 1),
                 }).toString()}`}
                 className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"

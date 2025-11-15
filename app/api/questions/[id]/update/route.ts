@@ -4,7 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const isAuthenticated = await verifyAdminSession();
   if (!isAuthenticated) {
@@ -13,7 +13,7 @@ export async function PUT(
 
   try {
     const data = await request.json();
-    const { id } = params;
+    const { id } = await params;
 
     // If status is being changed to published, set published_at
     if (data.status === 'published' && !data.published_at) {

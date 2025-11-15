@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 interface QuestionPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getQuestion(slug: string) {
@@ -25,7 +25,8 @@ async function getQuestion(slug: string) {
 export async function generateMetadata({
   params,
 }: QuestionPageProps): Promise<Metadata> {
-  const question = await getQuestion(params.slug);
+  const { slug } = await params;
+  const question = await getQuestion(slug);
 
   if (!question) {
     return {
@@ -46,7 +47,8 @@ export async function generateMetadata({
 }
 
 export default async function QuestionPage({ params }: QuestionPageProps) {
-  const question = await getQuestion(params.slug);
+  const { slug } = await params;
+  const question = await getQuestion(slug);
 
   if (!question) {
     notFound();

@@ -15,9 +15,10 @@ async function getQuestion(id: string) {
 export default async function EditQuestionPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const question = await getQuestion(params.id);
+  const { id } = await params;
+  const question = await getQuestion(id);
 
   if (!question) {
     notFound();
