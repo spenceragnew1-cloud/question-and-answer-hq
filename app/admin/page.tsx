@@ -115,7 +115,7 @@ export default async function AdminDashboard() {
               href="/admin/ideas"
               className="block w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-center"
             >
-              Manage Hack Ideas
+              Ideas
             </Link>
           </div>
         </div>

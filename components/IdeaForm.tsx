@@ -68,6 +68,9 @@ export default function IdeaForm() {
       className="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
     >
       <h2 className="text-xl font-semibold text-gray-900 mb-4">Add New Idea</h2>
+      <p className="text-sm text-gray-600 mb-4">
+        Add a new question idea that will be automatically processed by AI to generate draft content.
+      </p>
       {error && (
         <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
           {error}
