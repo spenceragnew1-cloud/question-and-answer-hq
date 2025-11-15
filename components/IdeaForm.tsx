@@ -8,6 +8,7 @@ export default function IdeaForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState<{
     proposed_question: string;
     category: Category;
@@ -26,13 +27,23 @@ export default function IdeaForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess(false);
 
     try {
+      // Validate required fields
+      if (!formData.proposed_question.trim()) {
+        setError('Proposed question is required');
+        setLoading(false);
+        return;
+      }
+
       const payload = {
-        ...formData,
+        proposed_question: formData.proposed_question.trim(),
+        category: formData.category,
         tags: formData.tags
           ? formData.tags.split(',').map((t) => t.trim()).filter(Boolean)
           : [],
+        notes: formData.notes.trim() || null,
         priority: formData.priority ? parseInt(formData.priority, 10) : null,
       };
 
@@ -40,9 +51,13 @@ export default function IdeaForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        credentials: 'include',
       });
 
+      const data = await response.json();
+
       if (response.ok) {
+        setSuccess(true);
         setFormData({
           proposed_question: '',
           category: CATEGORIES[0],
@@ -50,12 +65,16 @@ export default function IdeaForm() {
           notes: '',
           priority: '',
         });
-        router.refresh();
+        // Refresh the page to show the new idea
+        setTimeout(() => {
+          router.refresh();
+          setSuccess(false);
+        }, 1500);
       } else {
-        const data = await response.json();
         setError(data.error || 'Failed to create idea');
       }
     } catch (err) {
+      console.error('Error creating idea:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -74,6 +93,11 @@ export default function IdeaForm() {
       {error && (
         <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
           {error}
+        </div>
+      )}
+      {success && (
+        <div className="mb-4 p-3 bg-green-50 text-green-700 rounded-lg text-sm">
+          Idea created successfully! Refreshing...
         </div>
       )}
 

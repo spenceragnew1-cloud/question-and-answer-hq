@@ -11,9 +11,17 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
 
-    if (!data.proposed_question || !data.category) {
+    // Validate required fields
+    if (!data.proposed_question || !data.proposed_question.trim()) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Proposed question is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!data.category) {
+      return NextResponse.json(
+        { error: 'Category is required' },
         { status: 400 }
       );
     }
@@ -21,10 +29,10 @@ export async function POST(request: NextRequest) {
     const { data: idea, error } = await supabaseAdmin
       .from('hack_ideas')
       .insert({
-        proposed_question: data.proposed_question,
+        proposed_question: data.proposed_question.trim(),
         category: data.category,
         tags: data.tags || [],
-        notes: data.notes || null,
+        notes: data.notes?.trim() || null,
         priority: data.priority || null,
         status: 'new',
       })
@@ -32,11 +40,16 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      console.error('Supabase error creating idea:', error);
+      return NextResponse.json(
+        { error: error.message || 'Failed to create idea' },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json({ idea });
   } catch (error: any) {
+    console.error('Error in /api/ideas/create:', error);
     return NextResponse.json(
       { error: error.message || 'Internal server error' },
       { status: 500 }
