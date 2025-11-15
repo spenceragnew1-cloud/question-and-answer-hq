@@ -6,6 +6,7 @@ import QuestionCard from '@/components/QuestionCard';
 import EmailSignup from '@/components/EmailSignup';
 import { CATEGORIES } from '@/lib/categories';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 async function getQuestionOfTheDay() {
   const { data } = await supabase
@@ -54,7 +55,13 @@ export default async function HomePage() {
 
         {/* Search Bar */}
         <div className="mb-12">
-          <SearchBar />
+          <Suspense fallback={
+            <div className="w-full max-w-2xl mx-auto">
+              <div className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg bg-gray-100 animate-pulse" />
+            </div>
+          }>
+            <SearchBar />
+          </Suspense>
         </div>
 
         {/* Categories Grid */}
