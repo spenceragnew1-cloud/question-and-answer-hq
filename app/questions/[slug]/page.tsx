@@ -158,7 +158,7 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
               </span>
               {question.tags && question.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {question.tags.map((tag, idx) => (
+                  {question.tags.map((tag: string, idx: number) => (
                     <span
                       key={idx}
                       className="px-2 py-1 bg-gray-100 text-gray-700 rounded"
