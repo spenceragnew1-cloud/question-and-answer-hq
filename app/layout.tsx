@@ -21,6 +21,27 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            />
+            <script
+              id="ga-setup"
+              dangerouslySetInnerHTML={{
+                __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+            page_path: window.location.pathname,
+          });
+        `,
+              }}
+            />
+          </>
+        )}
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
