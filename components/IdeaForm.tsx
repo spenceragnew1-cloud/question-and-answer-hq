@@ -2,13 +2,19 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES, type Category } from '@/lib/categories';
 
 export default function IdeaForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    proposed_question: string;
+    category: Category;
+    tags: string;
+    notes: string;
+    priority: string;
+  }>({
     proposed_question: '',
     category: CATEGORIES[0],
     tags: '',
@@ -91,7 +97,7 @@ export default function IdeaForm() {
           <select
             value={formData.category}
             onChange={(e) =>
-              setFormData({ ...formData, category: e.target.value })
+              setFormData({ ...formData, category: e.target.value as Category })
             }
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
