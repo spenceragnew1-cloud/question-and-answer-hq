@@ -12,16 +12,23 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setError('');
 
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+        credentials: 'include', // Ensure cookies are sent
+      });
 
-    if (res.ok) {
-      router.push('/admin');
-    } else {
-      setError('Incorrect password');
+      if (res.ok) {
+        // Use window.location for a full page reload to ensure cookie is recognized
+        window.location.href = '/admin';
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Incorrect password');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
     }
   }
 
