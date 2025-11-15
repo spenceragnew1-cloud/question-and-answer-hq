@@ -29,26 +29,34 @@ export default function AdminTable({
         <tbody className="bg-white divide-y divide-gray-200">
           {rows.map((row, idx) => {
             const link = getRowLink?.(row);
-            const RowComponent = link ? Link : 'tr';
-            const rowProps = link ? { href: link } : {};
 
             return (
-              <RowComponent
+              <tr
                 key={idx}
-                {...rowProps}
                 className={link ? 'hover:bg-gray-50 cursor-pointer' : ''}
               >
-                {headers.map((header) => (
-                  <td
-                    key={header}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                  >
-                    {row[header.toLowerCase().replace(/\s+/g, '_')] ||
-                      row[header] ||
-                      '-'}
-                  </td>
-                ))}
-              </RowComponent>
+                {headers.map((header) => {
+                  const cellContent =
+                    row[header.toLowerCase().replace(/\s+/g, '_')] ||
+                    row[header] ||
+                    '-';
+
+                  return (
+                    <td
+                      key={header}
+                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                    >
+                      {link ? (
+                        <Link href={link} className="block">
+                          {cellContent}
+                        </Link>
+                      ) : (
+                        cellContent
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
             );
           })}
         </tbody>
