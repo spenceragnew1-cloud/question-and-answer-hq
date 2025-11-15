@@ -24,10 +24,11 @@ async function getQuestions(searchParams: SearchParams) {
 export default async function AdminQuestionsPage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
-  const questions = await getQuestions(searchParams);
-  const selectedStatus = searchParams.status || 'all';
+  const resolvedSearchParams = await searchParams;
+  const questions = await getQuestions(resolvedSearchParams);
+  const selectedStatus = resolvedSearchParams.status || 'all';
 
   return (
     <div>
