@@ -14,12 +14,12 @@ export async function POST(request: NextRequest) {
 
   try {
     // Query ideas table with proper queue logic
-    // Status = 'pending'
+    // Status = 'pending' OR 'new' (support both for backward compatibility)
     // Order by created_at (oldest first)
     const { data: ideas, error: ideasError } = await supabaseAdmin
       .from('ideas')
       .select('*')
-      .eq('status', 'pending')
+      .in('status', ['pending', 'new'])
       .order('created_at', { ascending: true })
       .limit(batchSize);
 
