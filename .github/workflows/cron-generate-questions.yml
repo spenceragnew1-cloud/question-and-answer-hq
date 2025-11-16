@@ -29,13 +29,16 @@ jobs:
       
       - name: Call cron endpoint
         run: |
-          ENDPOINT_URL="$SITE_URL/api/cron/generate-questions"
+          # Remove trailing slash from SITE_URL if present
+          SITE_URL_CLEAN="${SITE_URL%/}"
+          ENDPOINT_URL="$SITE_URL_CLEAN/api/cron/generate-questions"
           echo "Calling: $ENDPOINT_URL"
           
-          response=$(curl -s -w "\n%{http_code}" -X POST \
+          response=$(curl -s -L -w "\n%{http_code}" -X POST \
             "$ENDPOINT_URL" \
             -H "x-cron-secret: $CRON_SECRET" \
-            -H "Content-Type: application/json")
+            -H "Content-Type: application/json" \
+            --max-redirs 5)
           
           http_code=$(echo "$response" | tail -n1)
           body=$(echo "$response" | sed '$d')
@@ -47,6 +50,9 @@ jobs:
             echo "✅ Success! Questions generation triggered."
           else
             echo "❌ Error: HTTP $http_code"
+            if [ "$http_code" -eq 308 ] || [ "$http_code" -eq 301 ] || [ "$http_code" -eq 302 ]; then
+              echo "⚠️  Redirect detected. This might indicate a URL configuration issue."
+            fi
             exit 1
           fi
 
