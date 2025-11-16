@@ -40,6 +40,8 @@ export async function POST(request: NextRequest) {
     // Process each idea
     for (const idea of ideas) {
       try {
+        console.log(`Processing idea ${idea.id}: ${idea.proposed_question}`);
+        
         // Mark as processing
         await supabaseAdmin
           .from('ideas')
@@ -47,35 +49,43 @@ export async function POST(request: NextRequest) {
           .eq('id', idea.id);
 
         // Generate full question content using OpenAI
+        console.log(`Calling OpenAI for idea ${idea.id}...`);
         const generated = await generateQuestionAnswer(
           idea.proposed_question,
           idea.category,
           idea.tags || [],
           idea.notes || undefined
         );
+        console.log(`OpenAI response received for idea ${idea.id}. Generated question: ${generated.question}`);
+
+        // Prepare question data
+        const questionData = {
+          slug: generated.slug,
+          question: generated.question,
+          short_answer: generated.short_answer || null,
+          verdict: generated.verdict || null,
+          category: idea.category,
+          summary: generated.summary || null,
+          body_markdown: generated.body_markdown || null,
+          evidence_json: generated.evidence || null,
+          tags: generated.tags.length > 0 ? generated.tags : (idea.tags || []),
+          sources: generated.sources || [],
+          status: 'published',
+          published_at: new Date().toISOString(),
+        };
+
+        console.log(`Inserting question for idea ${idea.id} with slug: ${questionData.slug}`);
 
         // Insert into questions table (auto-publish)
         const { data: question, error: questionError } = await supabaseAdmin
           .from('questions')
-          .insert({
-            slug: generated.slug,
-            question: generated.question,
-            short_answer: generated.short_answer,
-            verdict: generated.verdict,
-            category: idea.category,
-            summary: generated.summary,
-            body_markdown: generated.body_markdown,
-            evidence_json: generated.evidence,
-            tags: generated.tags.length > 0 ? generated.tags : (idea.tags || []),
-            sources: generated.sources || [],
-            status: 'published',
-            published_at: new Date().toISOString(),
-          })
+          .insert(questionData)
           .select()
           .single();
 
         if (questionError) {
           console.error(`Error creating question for idea ${idea.id}:`, questionError);
+          console.error(`Question data that failed:`, JSON.stringify(questionData, null, 2));
           
           // Mark as failed
           await supabaseAdmin
@@ -90,9 +100,12 @@ export async function POST(request: NextRequest) {
             ideaId: idea.id,
             success: false,
             error: questionError.message,
+            details: questionError,
           });
           continue;
         }
+
+        console.log(`Successfully created question ${question.id} for idea ${idea.id}`);
 
         // Update ideas status to 'generated'
         const { error: updateError } = await supabaseAdmin
