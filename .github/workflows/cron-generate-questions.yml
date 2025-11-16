@@ -2,17 +2,36 @@ name: Generate Questions Daily
 
 on:
   schedule:
-    # Run daily at 3 AM UTC
-    - cron: '0 3 * * *'
+    # Runs every day at 09:00 UTC (adjust as needed)
+    - cron: '0 9 * * *'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
-  generate-questions:
+  generate:
     runs-on: ubuntu-latest
+    env:
+      SITE_URL: ${{ secrets.SITE_URL }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+
     steps:
-      - name: Trigger Question Generation
+      - name: Call cron endpoint
         run: |
-          curl -X POST "${{ secrets.SITE_URL }}/api/cron/generate-questions" \
-            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
-            -H "Content-Type: application/json"
+          echo "Calling $SITE_URL/api/cron/generate-questions"
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "$SITE_URL/api/cron/generate-questions" \
+            -H "x-cron-secret: $CRON_SECRET" \
+            -H "Content-Type: application/json")
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "Response body: $body"
+          echo "HTTP Status: $http_code"
+          
+          if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+            echo "✅ Success! Questions generation triggered."
+          else
+            echo "❌ Error: HTTP $http_code"
+            exit 1
+          fi
 
