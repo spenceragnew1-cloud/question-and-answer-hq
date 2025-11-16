@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     // scheduled_for IS NULL OR scheduled_for <= now()
     // Order by scheduled_for (NULLs first), then created_at
     const { data: ideas, error: ideasError } = await supabaseAdmin
-      .from('hack_ideas')
+      .from('ideas')
       .select('*')
       .eq('status', 'pending')
       .or(`scheduled_for.is.null,scheduled_for.lte.${now}`)
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       try {
         // Mark as processing
         await supabaseAdmin
-          .from('hack_ideas')
+          .from('ideas')
           .update({ status: 'processing' })
           .eq('id', idea.id);
 
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
           
           // Mark as failed
           await supabaseAdmin
-            .from('hack_ideas')
+            .from('ideas')
             .update({
               status: 'failed',
               processed_at: new Date().toISOString(),
@@ -99,9 +99,9 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        // Update hack_ideas status to 'generated'
+        // Update ideas status to 'generated'
         const { error: updateError } = await supabaseAdmin
-          .from('hack_ideas')
+          .from('ideas')
           .update({
             status: 'generated',
             processed_at: new Date().toISOString(),
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         
         // Mark as failed
         const { error: updateErr } = await supabaseAdmin
-          .from('hack_ideas')
+          .from('ideas')
           .update({
             status: 'failed',
             processed_at: new Date().toISOString(),

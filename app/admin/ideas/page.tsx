@@ -5,7 +5,7 @@ import IdeaForm from '@/components/IdeaForm';
 
 async function getIdeas() {
   const { data } = await supabaseAdmin
-    .from('hack_ideas')
+      .from('ideas')
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -91,7 +91,7 @@ export default async function AdminIdeasPage() {
         </table>
         {ideas.length === 0 && (
           <div className="text-center py-12 text-gray-500">
-            No hack ideas yet. Add one above!
+            No ideas yet. Add one above!
           </div>
         )}
       </div>

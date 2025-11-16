@@ -24,8 +24,8 @@ create index questions_category_idx on questions(category);
 create index questions_status_idx on questions(status);
 create index questions_published_idx on questions(published_at desc);
 
--- HACK IDEAS TABLE
-create table hack_ideas (
+-- IDEAS TABLE
+create table ideas (
   id uuid primary key default uuid_generate_v4(),
   proposed_question text not null,
   category text not null,
@@ -60,6 +60,6 @@ $$ language plpgsql;
 create trigger update_questions_updated_at before update on questions
   for each row execute function update_updated_at_column();
 
-create trigger update_hack_ideas_updated_at before update on hack_ideas
+create trigger update_ideas_updated_at before update on ideas
   for each row execute function update_updated_at_column();
 

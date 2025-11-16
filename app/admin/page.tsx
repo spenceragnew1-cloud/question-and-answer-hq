@@ -8,7 +8,7 @@ async function getStats() {
       .from('questions')
       .select('status', { count: 'exact', head: true }),
     supabaseAdmin
-      .from('hack_ideas')
+      .from('ideas')
       .select('status', { count: 'exact', head: true }),
     supabaseAdmin
       .from('subscribers')

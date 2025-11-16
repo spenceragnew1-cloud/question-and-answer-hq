@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { data: idea, error } = await supabaseAdmin
-      .from('hack_ideas')
+      .from('ideas')
       .insert({
         proposed_question: data.proposed_question.trim(),
         category: data.category,
