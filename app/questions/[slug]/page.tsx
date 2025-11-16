@@ -34,12 +34,14 @@ export async function generateMetadata({
     };
   }
 
+  const description = question.summary || question.short_answer || '';
+
   return {
-    title: `${question.question} | QuestionAndAnswerHQ`,
-    description: question.summary || question.short_answer || '',
+    title: question.question,
+    description,
     openGraph: {
       title: question.question,
-      description: question.summary || question.short_answer || '',
+      description,
       type: 'article',
       publishedTime: question.published_at || undefined,
     },
@@ -70,52 +72,110 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
     | Array<{ title: string; url: string; explanation: string }>
     | null;
 
-  // Build Q&A JSON-LD schema
+  // Build structured data
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
-  const questionUrl = `${siteUrl}/questions/${question.slug}`;
-  const publishedDate =
-    question.published_at || new Date().toISOString();
-  
-  // Get text content for Question and Answer
-  const questionText =
-    question.summary || question.short_answer || question.body_markdown || '';
+  const pageUrl = `${siteUrl}/questions/${question.slug}`;
+  const categoryName = formatCategoryName(question.category);
+  const categorySlug = question.category.toLowerCase();
+  const categoryUrl = `${siteUrl}/category/${categorySlug}`;
+  const publishedIso = question.published_at || new Date().toISOString();
+  const questionText = question.question;
   const answerText =
     question.short_answer || question.summary || question.body_markdown || '';
+  const descriptionText = question.summary || question.short_answer || '';
 
-  const qaSchema = {
+  const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'QAPage',
-    mainEntity: {
-      '@type': 'Question',
-      name: question.question,
-      text: questionText,
-      url: questionUrl,
-      datePublished: publishedDate,
-      answerCount: 1,
-      author: {
-        '@type': 'Organization',
-        name: 'Question and Answer HQ',
-        url: siteUrl,
+    '@graph': [
+      {
+        '@type': 'QAPage',
+        '@id': `${pageUrl}#qapage`,
+        mainEntity: {
+          '@type': 'Question',
+          '@id': `${pageUrl}#question`,
+          name: questionText,
+          text: descriptionText || answerText || '',
+          url: pageUrl,
+          datePublished: publishedIso,
+          answerCount: 1,
+          author: {
+            '@type': 'Organization',
+            name: 'Question and Answer HQ',
+            url: siteUrl,
+          },
+          acceptedAnswer: {
+            '@type': 'Answer',
+            '@id': `${pageUrl}#answer`,
+            text: answerText || '',
+            url: pageUrl,
+            datePublished: publishedIso,
+            upvoteCount: 0,
+            author: {
+              '@type': 'Organization',
+              name: 'Question and Answer HQ',
+              url: siteUrl,
+            },
+          },
+        },
       },
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: answerText,
-        url: questionUrl,
-        datePublished: publishedDate,
-        upvoteCount: 0,
+      {
+        '@type': 'Article',
+        '@id': `${pageUrl}#article`,
+        headline: questionText,
+        description: descriptionText || answerText || '',
+        datePublished: publishedIso,
+        dateModified: publishedIso,
+        mainEntityOfPage: pageUrl,
         author: {
           '@type': 'Organization',
           name: 'Question and Answer HQ',
           url: siteUrl,
         },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Question and Answer HQ',
+          url: siteUrl,
+        },
       },
-    },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${pageUrl}#breadcrumbs`,
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: siteUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: categoryName,
+            item: categoryUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: questionText,
+            item: pageUrl,
+          },
+        ],
+      },
+    ],
   };
 
   return (
-    <div className="min-h-screen bg-gray-bg">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <>
+      {/* Structured Data JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+      <div className="min-h-screen bg-gray-bg">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <article className="bg-white rounded-lg shadow-sm p-8 border border-gray-200">
           {/* Question */}
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
@@ -280,15 +340,9 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
           </section>
         )}
 
-        {/* JSON-LD Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(qaSchema),
-          }}
-        />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
