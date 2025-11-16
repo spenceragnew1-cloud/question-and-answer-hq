@@ -13,18 +13,13 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const now = new Date().toISOString();
-
     // Query ideas table with proper queue logic
     // Status = 'pending'
-    // scheduled_for IS NULL OR scheduled_for <= now()
-    // Order by scheduled_for (NULLs first), then created_at
+    // Order by created_at (oldest first)
     const { data: ideas, error: ideasError } = await supabaseAdmin
       .from('ideas')
       .select('*')
       .eq('status', 'pending')
-      .or(`scheduled_for.is.null,scheduled_for.lte.${now}`)
-      .order('scheduled_for', { ascending: true, nullsFirst: true })
       .order('created_at', { ascending: true })
       .limit(batchSize);
 
