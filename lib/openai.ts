@@ -24,14 +24,17 @@ export interface GeneratedContent {
 export async function generateQuestionAnswer(
   proposedQuestion: string,
   category: string,
-  tags?: string[],
-  notes?: string
+  tags?: string[] | null,
+  notes?: string | null
 ): Promise<GeneratedContent> {
+  // Ensure tags is always an array
+  const tagsArray = Array.isArray(tags) ? tags : (tags ? [tags] : []);
+  
   const prompt = `You are a research expert. Generate a comprehensive, research-backed answer to the following question.
 
 Proposed Question: ${proposedQuestion}
 Category: ${category}
-${tags && tags.length > 0 ? `Tags: ${tags.join(', ')}` : ''}
+${tagsArray.length > 0 ? `Tags: ${tagsArray.join(', ')}` : ''}
 ${notes ? `Additional Context: ${notes}` : ''}
 
 Requirements:
@@ -119,7 +122,7 @@ Be thorough, accurate, and cite real sources when possible.`;
       parsed.sources = [];
     }
     if (!parsed.tags || !Array.isArray(parsed.tags)) {
-      parsed.tags = tags || [];
+      parsed.tags = tagsArray;
     }
     if (!parsed.slug) {
       parsed.slug = slugify(parsed.question || proposedQuestion);

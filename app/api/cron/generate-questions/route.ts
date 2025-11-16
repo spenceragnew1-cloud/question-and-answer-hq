@@ -50,10 +50,16 @@ export async function POST(request: NextRequest) {
 
         // Generate full question content using OpenAI
         console.log(`Calling OpenAI for idea ${idea.id}...`);
+        // Parse tags from comma-separated string to array
+        const ideaTags = typeof idea.tags === 'string' 
+          ? idea.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t.length > 0)
+          : Array.isArray(idea.tags) 
+            ? idea.tags 
+            : [];
         const generated = await generateQuestionAnswer(
           idea.proposed_question,
           idea.category,
-          idea.tags || [],
+          ideaTags,
           idea.notes || undefined
         );
         console.log(`OpenAI response received for idea ${idea.id}. Generated question: ${generated.question}`);
@@ -68,7 +74,7 @@ export async function POST(request: NextRequest) {
           summary: generated.summary || null,
           body_markdown: generated.body_markdown || null,
           evidence_json: generated.evidence || null,
-          tags: generated.tags.length > 0 ? generated.tags : (idea.tags || []),
+          tags: generated.tags.length > 0 ? generated.tags : ideaTags,
           sources: generated.sources || [],
           status: 'published',
           published_at: new Date().toISOString(),
