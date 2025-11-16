@@ -14,6 +14,7 @@ export interface GeneratedContent {
     url: string;
     explanation: string;
   }>;
+  sources: string[];
 }
 
 export async function generateQuestionAnswer(
@@ -38,6 +39,12 @@ Requirements:
    - BBC, NYT, Reuters
    - Consumer Reports
    - Other reputable sources
+6. Provide sources array with 2-5 high-quality source URLs. These should be:
+   - PubMed articles (pubmed.ncbi.nlm.nih.gov)
+   - .gov sources (nih.gov, cdc.gov, etc.)
+   - .edu sources (university research)
+   - Official medical guidelines
+   - Each URL must be a valid, accessible link
 
 Format your response as JSON with this exact structure:
 {
@@ -51,6 +58,11 @@ Format your response as JSON with this exact structure:
       "url": "...",
       "explanation": "..."
     }
+  ],
+  "sources": [
+    "https://pubmed.ncbi.nlm.nih.gov/...",
+    "https://www.nih.gov/...",
+    "https://www.mayoclinic.org/..."
   ]
 }
 
@@ -80,6 +92,10 @@ Be thorough, accurate, and cite real sources when possible.`;
 
   try {
     const parsed = JSON.parse(content) as GeneratedContent;
+    // Ensure sources is always an array, even if the model omits it
+    if (!parsed.sources || !Array.isArray(parsed.sources)) {
+      parsed.sources = [];
+    }
     return parsed;
   } catch (error) {
     throw new Error('Failed to parse OpenAI response as JSON');

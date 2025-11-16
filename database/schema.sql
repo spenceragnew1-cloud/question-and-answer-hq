@@ -10,6 +10,7 @@ create table questions (
   body_markdown text,
   evidence_json jsonb,
   tags text[],
+  sources text[] default '{}'::text[],
   status text check (status in ('draft','approved','scheduled','published')) default 'draft',
   published_at timestamptz,
   scheduled_for timestamptz,

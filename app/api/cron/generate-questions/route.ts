@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         // Create slug
         const slug = slugify(idea.proposed_question);
 
-        // Insert into questions table
+        // Insert into questions table (auto-publish cron-generated questions)
         const { data: question, error: questionError } = await supabaseAdmin
           .from('questions')
           .insert({
@@ -58,7 +58,9 @@ export async function POST(request: NextRequest) {
             body_markdown: generated.body_markdown,
             evidence_json: generated.evidence,
             tags: idea.tags || [],
-            status: 'draft',
+            sources: generated.sources || [],
+            status: 'published',
+            published_at: new Date().toISOString(),
           })
           .select()
           .single();

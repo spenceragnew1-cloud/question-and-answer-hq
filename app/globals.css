@@ -32,3 +32,37 @@ body {
   }
 }
 
+/* Custom prose styles for teal theme */
+.prose-teal a {
+  color: #009688;
+  text-decoration: none;
+}
+
+.prose-teal a:hover {
+  color: #00796b;
+  text-decoration: underline;
+}
+
+.prose-teal strong {
+  color: inherit;
+  font-weight: 600;
+}
+
+.prose-teal code {
+  color: #009688;
+  background-color: #f0f9f8;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.prose-teal pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.prose-teal blockquote {
+  border-left-color: #009688;
+  color: #4b5563;
+}
+

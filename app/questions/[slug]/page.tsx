@@ -115,18 +115,30 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
 
           {/* Body Markdown */}
           {question.body_markdown && (
-            <div className="mb-8 prose prose-lg max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {question.body_markdown}
+            <article className="mb-8 prose prose-lg prose-teal max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-li:text-gray-700 prose-strong:text-gray-900">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  a: ({ node, ...props }) => (
+                    <a
+                      {...props}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal hover:text-teal-dark underline"
+                    />
+                  ),
+                }}
+              >
+                {question.body_markdown || ''}
               </ReactMarkdown>
-            </div>
+            </article>
           )}
 
           {/* Evidence */}
           {evidence && evidence.length > 0 && (
             <section className="mt-8 border-t border-gray-200 pt-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Sources
+                Sources & Evidence
               </h2>
               <ul className="list-disc pl-6 space-y-2">
                 {evidence.map((item, idx) => (
@@ -144,6 +156,27 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
                         - {item.explanation}
                       </span>
                     )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Sources */}
+          {question.sources && question.sources.length > 0 && (
+            <section className="mt-10 border-t border-gray-200 pt-6">
+              <h2 className="text-lg font-semibold mb-3 text-gray-900">Sources</h2>
+              <ul className="list-disc pl-5 space-y-1 text-sm">
+                {question.sources.map((src: string, idx: number) => (
+                  <li key={idx}>
+                    <a
+                      href={src}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-400 hover:text-teal-300 break-all"
+                    >
+                      {src}
+                    </a>
                   </li>
                 ))}
               </ul>

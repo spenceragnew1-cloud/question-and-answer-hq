@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase';
 import Link from 'next/link';
+import EnhanceArticlesButton from '@/components/EnhanceArticlesButton';
 
 async function getStats() {
   const [questions, ideas, subscribers] = await Promise.all([
@@ -119,6 +120,10 @@ export default async function AdminDashboard() {
             </Link>
           </div>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <EnhanceArticlesButton />
       </div>
     </div>
   );

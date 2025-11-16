@@ -15,6 +15,7 @@ interface Question {
   body_markdown?: string | null;
   evidence_json?: any;
   tags?: string[] | null;
+  sources?: string[] | null;
   status: string;
   published_at?: string | null;
   scheduled_for?: string | null;
@@ -28,6 +29,10 @@ export default function QuestionForm({ question }: QuestionFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [sourcesText, setSourcesText] = useState(
+    question?.sources?.join('\n') || ''
+  );
+
   const [formData, setFormData] = useState<Partial<Question>>({
     question: question?.question || '',
     slug: question?.slug || '',
@@ -37,11 +42,21 @@ export default function QuestionForm({ question }: QuestionFormProps) {
     summary: question?.summary || '',
     body_markdown: question?.body_markdown || '',
     tags: question?.tags || [],
+    sources: question?.sources || [],
     status: question?.status || 'draft',
     scheduled_for: question?.scheduled_for
       ? new Date(question.scheduled_for).toISOString().slice(0, 16)
       : '',
   });
+
+  // Update sourcesText when question prop changes
+  useEffect(() => {
+    if (question?.sources) {
+      setSourcesText(question.sources.join('\n'));
+    } else {
+      setSourcesText('');
+    }
+  }, [question]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,9 +64,16 @@ export default function QuestionForm({ question }: QuestionFormProps) {
     setError('');
 
     try {
+      // Parse sources from textarea (one URL per line)
+      const sources = sourcesText
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+
       const payload: any = {
         ...formData,
         tags: formData.tags || [],
+        sources: sources,
         evidence_json: formData.evidence_json || null,
         scheduled_for: formData.scheduled_for
           ? new Date(formData.scheduled_for).toISOString()
@@ -213,6 +235,21 @@ export default function QuestionForm({ question }: QuestionFormProps) {
               })
             }
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-gray-900 bg-white"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Sources (one URL per line)
+          </label>
+          <textarea
+            value={sourcesText}
+            onChange={(e) => setSourcesText(e.target.value)}
+            rows={5}
+            placeholder="https://pubmed.ncbi.nlm.nih.gov/...
+https://www.nih.gov/...
+https://www.mayoclinic.org/..."
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-gray-900 bg-white font-mono text-sm"
           />
         </div>
 
