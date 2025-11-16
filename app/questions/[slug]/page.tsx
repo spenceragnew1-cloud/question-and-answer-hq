@@ -70,6 +70,44 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
     | Array<{ title: string; url: string; explanation: string }>
     | null;
 
+  // Build Q&A JSON-LD schema
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
+  const questionUrl = `${siteUrl}/questions/${question.slug}`;
+  const publishedDate =
+    question.published_at || new Date().toISOString();
+  
+  // Get text content for Question and Answer
+  const questionText =
+    question.summary || question.short_answer || question.body_markdown || '';
+  const answerText =
+    question.short_answer || question.summary || question.body_markdown || '';
+
+  const qaSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'QAPage',
+    mainEntity: {
+      '@type': 'Question',
+      name: question.question,
+      text: questionText,
+      datePublished: publishedDate,
+      author: {
+        '@type': 'Organization',
+        name: 'Question and Answer HQ',
+      },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answerText,
+        url: questionUrl,
+        datePublished: publishedDate,
+        author: {
+          '@type': 'Organization',
+          name: 'Question and Answer HQ',
+        },
+      },
+    },
+  };
+
   return (
     <div className="min-h-screen bg-gray-bg">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -241,19 +279,7 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'QAPage',
-              mainEntity: {
-                '@type': 'Question',
-                name: question.question,
-                answerCount: 1,
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: question.short_answer || question.summary || '',
-                },
-              },
-            }),
+            __html: JSON.stringify(qaSchema),
           }}
         />
       </div>
