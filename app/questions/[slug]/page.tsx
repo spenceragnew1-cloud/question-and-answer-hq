@@ -124,30 +124,30 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
 
           {/* Evidence */}
           {evidence && evidence.length > 0 && (
-            <div className="mb-8">
+            <section className="mt-8 border-t border-gray-200 pt-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Sources & Evidence
+                Sources
               </h2>
-              <ul className="space-y-3">
+              <ul className="list-disc pl-6 space-y-2">
                 {evidence.map((item, idx) => (
-                  <li key={idx} className="border-l-4 border-teal pl-4">
+                  <li key={idx} className="text-gray-700">
                     <a
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-teal hover:text-teal-dark font-medium"
+                      className="text-teal hover:text-teal-dark underline"
                     >
-                      {item.title}
+                      {item.title || item.url}
                     </a>
                     {item.explanation && (
-                      <p className="text-gray-600 text-sm mt-1">
-                        {item.explanation}
-                      </p>
+                      <span className="text-gray-600 text-sm ml-2">
+                        - {item.explanation}
+                      </span>
                     )}
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
           )}
 
           {/* Meta Info */}
