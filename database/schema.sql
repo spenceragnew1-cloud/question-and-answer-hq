@@ -30,9 +30,12 @@ create table hack_ideas (
   proposed_question text not null,
   category text not null,
   tags text[],
-  status text check (status in ('new','draft_generated','approved','discarded')) default 'new',
+  status text check (status in ('pending','new','generated','processing','failed','draft_generated','approved','discarded')) default 'pending',
   notes text,
   priority int,
+  scheduled_for timestamptz,
+  processed_at timestamptz,
+  generated_question_id uuid,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );

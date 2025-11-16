@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         tags: data.tags || [],
         notes: data.notes?.trim() || null,
         priority: data.priority || null,
-        status: 'new',
+        status: 'pending',
       })
       .select()
       .single();

@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -53,27 +54,7 @@ export default function RootLayout({
             __html: JSON.stringify(webSiteSchema),
           }}
         />
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-            />
-            <script
-              id="ga-setup"
-              dangerouslySetInnerHTML={{
-                __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-            page_path: window.location.pathname,
-          });
-        `,
-              }}
-            />
-          </>
-        )}
+        <GoogleAnalytics />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

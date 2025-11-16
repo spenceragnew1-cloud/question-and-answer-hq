@@ -267,7 +267,7 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
 
           {/* Sources */}
           {question.sources && question.sources.length > 0 && (
-            <section className="mt-10 border-t border-gray-200 pt-6">
+            <section className="mt-10 border-t border-slate-800 pt-6">
               <h2 className="text-lg font-semibold mb-3 text-gray-900">Sources</h2>
               <ul className="list-disc pl-5 space-y-1 text-sm">
                 {question.sources.map((src: string, idx: number) => (
@@ -315,31 +315,22 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
 
         {/* Related Questions */}
         {relatedQuestions.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Related Questions
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {relatedQuestions.map((related) => (
-                <Link
-                  key={related.id}
-                  href={`/questions/${related.slug}`}
-                  className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200"
-                >
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {related.question}
-                  </h3>
-                  {related.short_answer && (
-                    <p className="text-gray-600 line-clamp-2">
-                      {related.short_answer}
-                    </p>
-                  )}
-                </Link>
+          <section className="mt-10 border-t border-slate-800 pt-6">
+            <h2 className="text-lg font-semibold mb-3 text-gray-900">Related questions</h2>
+            <ul className="space-y-2 text-sm">
+              {relatedQuestions.map((q) => (
+                <li key={q.id}>
+                  <a
+                    href={`/questions/${q.slug}`}
+                    className="text-teal-400 hover:text-teal-300"
+                  >
+                    {q.question}
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </section>
         )}
-
         </div>
       </div>
     </>

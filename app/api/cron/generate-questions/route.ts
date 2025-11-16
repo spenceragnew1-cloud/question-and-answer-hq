@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { generateQuestionAnswer } from '@/lib/openai';
-import { slugify } from '@/lib/slugify';
 
 const CRON_SECRET = process.env.CRON_SECRET!;
+const batchSize = 5;
 
 export async function POST(request: NextRequest) {
   // Verify cron secret
@@ -13,12 +13,20 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Fetch up to 5 hack_ideas with status == 'new'
+    const now = new Date().toISOString();
+
+    // Query ideas table with proper queue logic
+    // Status = 'pending'
+    // scheduled_for IS NULL OR scheduled_for <= now()
+    // Order by scheduled_for (NULLs first), then created_at
     const { data: ideas, error: ideasError } = await supabaseAdmin
       .from('hack_ideas')
       .select('*')
-      .eq('status', 'new')
-      .limit(5);
+      .eq('status', 'pending')
+      .or(`scheduled_for.is.null,scheduled_for.lte.${now}`)
+      .order('scheduled_for', { ascending: true, nullsFirst: true })
+      .order('created_at', { ascending: true })
+      .limit(batchSize);
 
     if (ideasError) {
       throw ideasError;
@@ -26,8 +34,9 @@ export async function POST(request: NextRequest) {
 
     if (!ideas || ideas.length === 0) {
       return NextResponse.json({
-        message: 'No new ideas to process',
+        message: 'No pending ideas to process',
         processed: 0,
+        batchSize,
       });
     }
 
@@ -36,28 +45,33 @@ export async function POST(request: NextRequest) {
     // Process each idea
     for (const idea of ideas) {
       try {
-        // Generate answer using OpenAI
+        // Mark as processing
+        await supabaseAdmin
+          .from('hack_ideas')
+          .update({ status: 'processing' })
+          .eq('id', idea.id);
+
+        // Generate full question content using OpenAI
         const generated = await generateQuestionAnswer(
           idea.proposed_question,
-          idea.category
+          idea.category,
+          idea.tags || [],
+          idea.notes || undefined
         );
 
-        // Create slug
-        const slug = slugify(idea.proposed_question);
-
-        // Insert into questions table (auto-publish cron-generated questions)
+        // Insert into questions table (auto-publish)
         const { data: question, error: questionError } = await supabaseAdmin
           .from('questions')
           .insert({
-            slug,
-            question: idea.proposed_question,
+            slug: generated.slug,
+            question: generated.question,
             short_answer: generated.short_answer,
             verdict: generated.verdict,
             category: idea.category,
             summary: generated.summary,
             body_markdown: generated.body_markdown,
             evidence_json: generated.evidence,
-            tags: idea.tags || [],
+            tags: generated.tags.length > 0 ? generated.tags : (idea.tags || []),
             sources: generated.sources || [],
             status: 'published',
             published_at: new Date().toISOString(),
@@ -67,6 +81,16 @@ export async function POST(request: NextRequest) {
 
         if (questionError) {
           console.error(`Error creating question for idea ${idea.id}:`, questionError);
+          
+          // Mark as failed
+          await supabaseAdmin
+            .from('hack_ideas')
+            .update({
+              status: 'failed',
+              processed_at: new Date().toISOString(),
+            })
+            .eq('id', idea.id);
+
           results.push({
             ideaId: idea.id,
             success: false,
@@ -75,10 +99,14 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        // Update hack_ideas status to 'draft_generated'
+        // Update hack_ideas status to 'generated'
         const { error: updateError } = await supabaseAdmin
           .from('hack_ideas')
-          .update({ status: 'draft_generated' })
+          .update({
+            status: 'generated',
+            processed_at: new Date().toISOString(),
+            generated_question_id: question.id,
+          })
           .eq('id', idea.id);
 
         if (updateError) {
@@ -88,10 +116,25 @@ export async function POST(request: NextRequest) {
         results.push({
           ideaId: idea.id,
           questionId: question.id,
+          slug: question.slug,
           success: true,
         });
       } catch (error: any) {
         console.error(`Error processing idea ${idea.id}:`, error);
+        
+        // Mark as failed
+        const { error: updateErr } = await supabaseAdmin
+          .from('hack_ideas')
+          .update({
+            status: 'failed',
+            processed_at: new Date().toISOString(),
+          })
+          .eq('id', idea.id);
+        
+        if (updateErr) {
+          console.error(`Error marking idea ${idea.id} as failed:`, updateErr);
+        }
+
         results.push({
           ideaId: idea.id,
           success: false,
@@ -100,9 +143,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const successful = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
+
     return NextResponse.json({
-      message: `Processed ${results.length} ideas`,
-      processed: results.filter((r) => r.success).length,
+      message: `Processed ${results.length} ideas (${successful} successful, ${failed} failed)`,
+      processed: successful,
+      failed,
+      batchSize,
       results,
     });
   } catch (error: any) {
@@ -113,4 +161,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
