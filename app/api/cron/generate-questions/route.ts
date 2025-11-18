@@ -15,11 +15,13 @@ export async function POST(request: NextRequest) {
   try {
     // Query ideas table with proper queue logic
     // Status = 'pending' OR 'new' (support both for backward compatibility)
+    // Also include 'processing' that are older than 1 hour (stuck processing)
     // Order by created_at (oldest first)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const { data: ideas, error: ideasError } = await supabaseAdmin
       .from('ideas')
       .select('*')
-      .in('status', ['pending', 'new'])
+      .or(`status.in.(pending,new),and(status.eq.processing,updated_at.lt.${oneHourAgo})`)
       .order('created_at', { ascending: true })
       .limit(batchSize);
 

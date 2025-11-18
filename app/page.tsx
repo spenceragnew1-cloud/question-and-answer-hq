@@ -7,6 +7,15 @@ import EmailSignup from '@/components/EmailSignup';
 import { CATEGORIES } from '@/lib/categories';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'QuestionAndAnswerHQ | Research-Backed Answers',
+  description: 'Research-backed answers to your questions, updated daily.',
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com',
+  },
+};
 
 async function getQuestionOfTheDay() {
   const { data } = await supabase

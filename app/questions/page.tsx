@@ -2,11 +2,24 @@ import { supabase } from '@/lib/supabase';
 import QuestionCard from '@/components/QuestionCard';
 import SearchBar from '@/components/SearchBar';
 import { CATEGORIES, formatCategoryName } from '@/lib/categories';
+import type { Metadata } from 'next';
 
 interface SearchParams {
   q?: string;
   category?: string;
   page?: string;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
+  
+  return {
+    title: 'All Questions | QuestionAndAnswerHQ',
+    description: 'Browse all research-backed questions and answers.',
+    alternates: {
+      canonical: `${siteUrl}/questions`,
+    },
+  };
 }
 
 async function getQuestions(searchParams: SearchParams) {

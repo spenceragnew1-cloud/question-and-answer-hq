@@ -40,9 +40,14 @@ export async function generateMetadata({
   }
 
   const categoryName = formatCategoryName(category);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
+  
   return {
     title: `${categoryName} Questions | QuestionAndAnswerHQ`,
     description: `Browse all questions and answers in the ${categoryName} category.`,
+    alternates: {
+      canonical: `${siteUrl}/category/${category}`,
+    },
   };
 }
 

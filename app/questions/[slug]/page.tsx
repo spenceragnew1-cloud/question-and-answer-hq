@@ -35,15 +35,21 @@ export async function generateMetadata({
   }
 
   const description = question.summary || question.short_answer || '';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
+  const canonicalUrl = `${siteUrl}/questions/${question.slug}`;
 
   return {
     title: question.question,
     description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: question.question,
       description,
       type: 'article',
       publishedTime: question.published_at || undefined,
+      url: canonicalUrl,
     },
   };
 }
