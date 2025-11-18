@@ -174,11 +174,16 @@ export async function POST(request: NextRequest) {
           continue;
         }
         
-        // Mark as processing
-        await supabaseAdmin
+        // Mark as processing FIRST - this ensures the idea is marked as used immediately
+        const { error: processingError } = await supabaseAdmin
           .from('ideas')
           .update({ status: 'processing' })
           .eq('id', idea.id);
+        
+        if (processingError) {
+          console.error(`Error marking idea ${idea.id} as processing:`, processingError);
+          // Continue anyway - we'll mark it as generated at the end
+        }
 
         // Generate full question content using OpenAI
         console.log(`Calling OpenAI for idea ${idea.id}...`);
@@ -188,21 +193,41 @@ export async function POST(request: NextRequest) {
           : Array.isArray(idea.tags) 
             ? idea.tags 
             : [];
-        const generated = await generateQuestionAnswer(
-          idea.proposed_question,
-          idea.category,
-          ideaTags,
-          idea.notes || undefined
-        );
-        console.log(`OpenAI response received for idea ${idea.id}. Generated question: ${generated.question}`);
+        
+        let generated;
+        try {
+          generated = await generateQuestionAnswer(
+            idea.proposed_question,
+            idea.category,
+            ideaTags,
+            idea.notes || undefined
+          );
+          console.log(`OpenAI response received for idea ${idea.id}. Generated question: ${generated.question}`);
+        } catch (openaiError: any) {
+          console.error(`OpenAI error for idea ${idea.id}:`, openaiError);
+          // Mark as failed and continue
+          await supabaseAdmin
+            .from('ideas')
+            .update({
+              status: 'failed',
+              processed_at: new Date().toISOString(),
+            })
+            .eq('id', idea.id);
+          
+          results.push({
+            ideaId: idea.id,
+            success: false,
+            error: `OpenAI error: ${openaiError.message || 'Unknown error'}`,
+          });
+          continue;
+        }
 
         // Content-based duplicate detection: Check if a similar question already exists
         const duplicateCheck = await checkForDuplicateQuestion(generated.question);
         if (duplicateCheck.exists) {
-          console.log(`Duplicate question detected for idea ${idea.id}. Similar question already exists (ID: ${duplicateCheck.existingQuestionId}). Skipping.`);
+          console.log(`Duplicate question detected for idea ${idea.id}. Similar question already exists (ID: ${duplicateCheck.existingQuestionId}). Marking as generated.`);
           
-          // Mark idea as generated but note it was a duplicate
-          // Try to include generated_question_id, fallback if column doesn't exist
+          // ALWAYS mark idea as generated when duplicate is found - this marks it as used
           const duplicateUpdateData: any = {
             status: 'generated',
             processed_at: new Date().toISOString(),
@@ -220,6 +245,22 @@ export async function POST(request: NextRequest) {
           // If error is about missing column, try update without it
           if (duplicateUpdateError && (duplicateUpdateError.message?.includes('does not exist') || duplicateUpdateError.message?.includes('column'))) {
             console.warn(`generated_question_id column doesn't exist. Updating status only for duplicate idea ${idea.id}`);
+            const { error: fallbackError } = await supabaseAdmin
+              .from('ideas')
+              .update({
+                status: 'generated',
+                processed_at: new Date().toISOString(),
+              })
+              .eq('id', idea.id);
+            
+            if (fallbackError) {
+              console.error(`Failed to update duplicate idea ${idea.id} even without column:`, fallbackError);
+            } else {
+              console.log(`Successfully marked duplicate idea ${idea.id} as generated`);
+            }
+          } else if (duplicateUpdateError) {
+            console.error(`Error updating duplicate idea ${idea.id}:`, duplicateUpdateError);
+            // Try one more time with just status
             await supabaseAdmin
               .from('ideas')
               .update({
@@ -227,8 +268,8 @@ export async function POST(request: NextRequest) {
                 processed_at: new Date().toISOString(),
               })
               .eq('id', idea.id);
-          } else if (duplicateUpdateError) {
-            console.error(`Error updating duplicate idea ${idea.id}:`, duplicateUpdateError);
+          } else {
+            console.log(`Successfully marked duplicate idea ${idea.id} as generated`);
           }
           
           results.push({
@@ -237,6 +278,7 @@ export async function POST(request: NextRequest) {
             error: 'Duplicate question detected - similar question already exists',
             skipped: true,
             duplicateOf: duplicateCheck.existingQuestionId,
+            markedAsUsed: true,
           });
           continue;
         }
@@ -329,7 +371,7 @@ export async function POST(request: NextRequest) {
 
         console.log(`Successfully created question ${question.id} for idea ${idea.id}`);
 
-        // Update ideas status to 'generated'
+        // ALWAYS update ideas status to 'generated' - this marks it as used
         // Try to update with generated_question_id, fallback to status only if column doesn't exist
         const updateData: any = {
           status: 'generated',
@@ -352,6 +394,22 @@ export async function POST(request: NextRequest) {
           // If error is about missing column, try update without it
           if (updateError.message?.includes('does not exist') || updateError.message?.includes('column')) {
             console.warn(`generated_question_id column doesn't exist. Updating status only for idea ${idea.id}`);
+            const { error: fallbackError } = await supabaseAdmin
+              .from('ideas')
+              .update({
+                status: 'generated',
+                processed_at: new Date().toISOString(),
+              })
+              .eq('id', idea.id);
+            
+            if (fallbackError) {
+              console.error(`Failed to update idea ${idea.id} even without column:`, fallbackError);
+            } else {
+              console.log(`Successfully marked idea ${idea.id} as generated (without column)`);
+            }
+          } else {
+            console.error(`Error updating idea ${idea.id}:`, updateError);
+            // Try one more time with just status to ensure it's marked
             await supabaseAdmin
               .from('ideas')
               .update({
@@ -359,9 +417,9 @@ export async function POST(request: NextRequest) {
                 processed_at: new Date().toISOString(),
               })
               .eq('id', idea.id);
-          } else {
-            console.error(`Error updating idea ${idea.id}:`, updateError);
           }
+        } else {
+          console.log(`Successfully marked idea ${idea.id} as generated with question ${question.id}`);
         }
 
         results.push({
