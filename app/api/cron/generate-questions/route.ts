@@ -5,6 +5,79 @@ import { generateQuestionAnswer } from '@/lib/openai';
 const CRON_SECRET = process.env.CRON_SECRET!;
 const batchSize = 5;
 
+/**
+ * Normalize text for comparison (lowercase, remove punctuation, trim)
+ */
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g, '') // Remove punctuation
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+}
+
+/**
+ * Check if two question texts are similar (content-based duplicate detection)
+ * Returns true if questions are very similar (80%+ word overlap)
+ */
+function areQuestionsSimilar(question1: string, question2: string): boolean {
+  const normalized1 = normalizeText(question1);
+  const normalized2 = normalizeText(question2);
+  
+  // Exact match after normalization
+  if (normalized1 === normalized2) {
+    return true;
+  }
+  
+  // Check word overlap
+  const words1 = new Set(normalized1.split(/\s+/).filter(w => w.length > 2)); // Ignore short words
+  const words2 = new Set(normalized2.split(/\s+/).filter(w => w.length > 2));
+  
+  if (words1.size === 0 || words2.size === 0) {
+    return false;
+  }
+  
+  // Count overlapping words
+  let overlap = 0;
+  for (const word of words1) {
+    if (words2.has(word)) {
+      overlap++;
+    }
+  }
+  
+  // Calculate similarity percentage
+  const similarity = overlap / Math.max(words1.size, words2.size);
+  
+  // Consider similar if 80%+ word overlap
+  return similarity >= 0.8;
+}
+
+/**
+ * Check if a similar question already exists in the database
+ */
+async function checkForDuplicateQuestion(questionText: string): Promise<{ exists: boolean; existingQuestionId?: string }> {
+  // Get all published questions
+  const { data: existingQuestions, error } = await supabaseAdmin
+    .from('questions')
+    .select('id, question')
+    .eq('status', 'published');
+  
+  if (error || !existingQuestions) {
+    console.error('Error checking for duplicate questions:', error);
+    return { exists: false };
+  }
+  
+  // Check each existing question for similarity
+  for (const existing of existingQuestions) {
+    if (areQuestionsSimilar(questionText, existing.question)) {
+      console.log(`Found similar question: "${existing.question}" (ID: ${existing.id})`);
+      return { exists: true, existingQuestionId: existing.id };
+    }
+  }
+  
+  return { exists: false };
+}
+
 export async function POST(request: NextRequest) {
   // Verify cron secret
   const cronSecret = request.headers.get('x-cron-secret');
@@ -13,6 +86,20 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // First, cleanup: Update ideas that have generated_question_id but wrong status
+    // This fixes ideas that were processed but status wasn't updated properly
+    const { error: cleanupError } = await supabaseAdmin
+      .from('ideas')
+      .update({ status: 'generated' })
+      .not('generated_question_id', 'is', null)
+      .neq('status', 'generated');
+    
+    if (cleanupError) {
+      console.error('Error cleaning up idea statuses:', cleanupError);
+    } else {
+      console.log('Cleaned up idea statuses for ideas with generated_question_id');
+    }
+    
     // Query ideas table with proper queue logic
     // Status = 'pending' OR 'new' (support both for backward compatibility)
     // Also include 'processing' that are older than 1 hour (stuck processing)
@@ -88,6 +175,31 @@ export async function POST(request: NextRequest) {
           idea.notes || undefined
         );
         console.log(`OpenAI response received for idea ${idea.id}. Generated question: ${generated.question}`);
+
+        // Content-based duplicate detection: Check if a similar question already exists
+        const duplicateCheck = await checkForDuplicateQuestion(generated.question);
+        if (duplicateCheck.exists) {
+          console.log(`Duplicate question detected for idea ${idea.id}. Similar question already exists (ID: ${duplicateCheck.existingQuestionId}). Skipping.`);
+          
+          // Mark idea as generated but note it was a duplicate
+          await supabaseAdmin
+            .from('ideas')
+            .update({
+              status: 'generated',
+              processed_at: new Date().toISOString(),
+              generated_question_id: duplicateCheck.existingQuestionId || null,
+            })
+            .eq('id', idea.id);
+          
+          results.push({
+            ideaId: idea.id,
+            success: false,
+            error: 'Duplicate question detected - similar question already exists',
+            skipped: true,
+            duplicateOf: duplicateCheck.existingQuestionId,
+          });
+          continue;
+        }
 
         // Check if a question with this slug already exists
         let finalSlug = generated.slug;
