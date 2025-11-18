@@ -88,31 +88,46 @@ export async function POST(request: NextRequest) {
   try {
     // First, cleanup: Update ideas that have generated_question_id but wrong status
     // This fixes ideas that were processed but status wasn't updated properly
-    const { error: cleanupError } = await supabaseAdmin
-      .from('ideas')
-      .update({ status: 'generated' })
-      .not('generated_question_id', 'is', null)
-      .neq('status', 'generated');
-    
-    if (cleanupError) {
-      console.error('Error cleaning up idea statuses:', cleanupError);
-    } else {
-      console.log('Cleaned up idea statuses for ideas with generated_question_id');
+    // Note: This will fail silently if the column doesn't exist yet
+    try {
+      const { error: cleanupError } = await supabaseAdmin
+        .from('ideas')
+        .update({ status: 'generated' })
+        .not('generated_question_id', 'is', null)
+        .neq('status', 'generated');
+      
+      if (cleanupError) {
+        // Column might not exist yet - log but continue
+        if (cleanupError.message?.includes('does not exist') || cleanupError.message?.includes('column')) {
+          console.warn('generated_question_id column does not exist yet. Please run the migration: database/migrations/add_generated_question_id.sql');
+        } else {
+          console.error('Error cleaning up idea statuses:', cleanupError);
+        }
+      } else {
+        console.log('Cleaned up idea statuses for ideas with generated_question_id');
+      }
+    } catch (cleanupErr: any) {
+      console.warn('Cleanup step skipped (column may not exist):', cleanupErr.message);
     }
     
     // Query ideas table with proper queue logic
     // Status = 'pending' OR 'new' (support both for backward compatibility)
     // Also include 'processing' that are older than 1 hour (stuck processing)
-    // Exclude ideas that already have a generated_question_id (already processed)
+    // Note: We filter by generated_question_id in code below since column may not exist yet
     // Order by created_at (oldest first)
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const { data: ideas, error: ideasError } = await supabaseAdmin
+    const { data: allIdeas, error: ideasError } = await supabaseAdmin
       .from('ideas')
       .select('*')
       .or(`status.in.(pending,new),and(status.eq.processing,updated_at.lt.${oneHourAgo})`)
-      .is('generated_question_id', null) // Only get ideas that haven't been processed yet
       .order('created_at', { ascending: true })
-      .limit(batchSize);
+      .limit(batchSize * 2); // Get more to account for filtering in code
+    
+    // Filter out ideas that already have generated_question_id (if column exists)
+    const ideas = (allIdeas || []).filter((idea: any) => {
+      // If the property doesn't exist or is null, include it
+      return idea.generated_question_id === undefined || idea.generated_question_id === null;
+    }).slice(0, batchSize); // Limit to batchSize after filtering
 
     if (ideasError) {
       throw ideasError;
@@ -134,15 +149,20 @@ export async function POST(request: NextRequest) {
         console.log(`Processing idea ${idea.id}: ${idea.proposed_question}`);
         
         // Skip if this idea already has a generated question
-        if (idea.generated_question_id) {
+        // Check if the property exists (column may not exist in DB yet)
+        if (idea.generated_question_id !== undefined && idea.generated_question_id !== null) {
           console.log(`Idea ${idea.id} already has generated_question_id: ${idea.generated_question_id}. Skipping.`);
           
           // Update status to 'generated' if it's not already
           if (idea.status !== 'generated') {
-            await supabaseAdmin
-              .from('ideas')
-              .update({ status: 'generated' })
-              .eq('id', idea.id);
+            try {
+              await supabaseAdmin
+                .from('ideas')
+                .update({ status: 'generated' })
+                .eq('id', idea.id);
+            } catch (updateErr: any) {
+              console.warn('Could not update idea status (column may not exist):', updateErr.message);
+            }
           }
           
           results.push({
@@ -182,14 +202,34 @@ export async function POST(request: NextRequest) {
           console.log(`Duplicate question detected for idea ${idea.id}. Similar question already exists (ID: ${duplicateCheck.existingQuestionId}). Skipping.`);
           
           // Mark idea as generated but note it was a duplicate
-          await supabaseAdmin
+          // Try to include generated_question_id, fallback if column doesn't exist
+          const duplicateUpdateData: any = {
+            status: 'generated',
+            processed_at: new Date().toISOString(),
+          };
+          
+          if (duplicateCheck.existingQuestionId) {
+            duplicateUpdateData.generated_question_id = duplicateCheck.existingQuestionId;
+          }
+          
+          const { error: duplicateUpdateError } = await supabaseAdmin
             .from('ideas')
-            .update({
-              status: 'generated',
-              processed_at: new Date().toISOString(),
-              generated_question_id: duplicateCheck.existingQuestionId || null,
-            })
+            .update(duplicateUpdateData)
             .eq('id', idea.id);
+          
+          // If error is about missing column, try update without it
+          if (duplicateUpdateError && (duplicateUpdateError.message?.includes('does not exist') || duplicateUpdateError.message?.includes('column'))) {
+            console.warn(`generated_question_id column doesn't exist. Updating status only for duplicate idea ${idea.id}`);
+            await supabaseAdmin
+              .from('ideas')
+              .update({
+                status: 'generated',
+                processed_at: new Date().toISOString(),
+              })
+              .eq('id', idea.id);
+          } else if (duplicateUpdateError) {
+            console.error(`Error updating duplicate idea ${idea.id}:`, duplicateUpdateError);
+          }
           
           results.push({
             ideaId: idea.id,
@@ -290,17 +330,38 @@ export async function POST(request: NextRequest) {
         console.log(`Successfully created question ${question.id} for idea ${idea.id}`);
 
         // Update ideas status to 'generated'
+        // Try to update with generated_question_id, fallback to status only if column doesn't exist
+        const updateData: any = {
+          status: 'generated',
+          processed_at: new Date().toISOString(),
+        };
+        
+        // Only include generated_question_id if we can (column might not exist)
+        try {
+          updateData.generated_question_id = question.id;
+        } catch (e) {
+          // Column doesn't exist - continue without it
+        }
+        
         const { error: updateError } = await supabaseAdmin
           .from('ideas')
-          .update({
-            status: 'generated',
-            processed_at: new Date().toISOString(),
-            generated_question_id: question.id,
-          })
+          .update(updateData)
           .eq('id', idea.id);
 
         if (updateError) {
-          console.error(`Error updating idea ${idea.id}:`, updateError);
+          // If error is about missing column, try update without it
+          if (updateError.message?.includes('does not exist') || updateError.message?.includes('column')) {
+            console.warn(`generated_question_id column doesn't exist. Updating status only for idea ${idea.id}`);
+            await supabaseAdmin
+              .from('ideas')
+              .update({
+                status: 'generated',
+                processed_at: new Date().toISOString(),
+              })
+              .eq('id', idea.id);
+          } else {
+            console.error(`Error updating idea ${idea.id}:`, updateError);
+          }
         }
 
         results.push({
