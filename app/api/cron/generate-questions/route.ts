@@ -16,12 +16,14 @@ export async function POST(request: NextRequest) {
     // Query ideas table with proper queue logic
     // Status = 'pending' OR 'new' (support both for backward compatibility)
     // Also include 'processing' that are older than 1 hour (stuck processing)
+    // Exclude ideas that already have a generated_question_id (already processed)
     // Order by created_at (oldest first)
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const { data: ideas, error: ideasError } = await supabaseAdmin
       .from('ideas')
       .select('*')
       .or(`status.in.(pending,new),and(status.eq.processing,updated_at.lt.${oneHourAgo})`)
+      .is('generated_question_id', null) // Only get ideas that haven't been processed yet
       .order('created_at', { ascending: true })
       .limit(batchSize);
 
@@ -43,6 +45,27 @@ export async function POST(request: NextRequest) {
     for (const idea of ideas) {
       try {
         console.log(`Processing idea ${idea.id}: ${idea.proposed_question}`);
+        
+        // Skip if this idea already has a generated question
+        if (idea.generated_question_id) {
+          console.log(`Idea ${idea.id} already has generated_question_id: ${idea.generated_question_id}. Skipping.`);
+          
+          // Update status to 'generated' if it's not already
+          if (idea.status !== 'generated') {
+            await supabaseAdmin
+              .from('ideas')
+              .update({ status: 'generated' })
+              .eq('id', idea.id);
+          }
+          
+          results.push({
+            ideaId: idea.id,
+            success: false,
+            error: 'Idea already has a generated question',
+            skipped: true,
+          });
+          continue;
+        }
         
         // Mark as processing
         await supabaseAdmin
@@ -66,9 +89,48 @@ export async function POST(request: NextRequest) {
         );
         console.log(`OpenAI response received for idea ${idea.id}. Generated question: ${generated.question}`);
 
+        // Check if a question with this slug already exists
+        let finalSlug = generated.slug;
+        const { data: existingQuestion } = await supabaseAdmin
+          .from('questions')
+          .select('id, slug')
+          .eq('slug', finalSlug)
+          .maybeSingle(); // Use maybeSingle() to return null if not found instead of throwing
+        
+        // If slug exists, append a number to make it unique
+        if (existingQuestion) {
+          console.log(`Slug ${finalSlug} already exists. Generating unique slug...`);
+          let counter = 2; // Start at 2 since the original slug is "1"
+          let uniqueSlug = `${finalSlug}-${counter}`;
+          
+          while (true) {
+            const { data: check } = await supabaseAdmin
+              .from('questions')
+              .select('id')
+              .eq('slug', uniqueSlug)
+              .maybeSingle();
+            
+            if (!check) {
+              finalSlug = uniqueSlug;
+              break;
+            }
+            
+            counter++;
+            // Use the original slug as base, not the modified one
+            uniqueSlug = `${generated.slug}-${counter}`;
+            
+            // Safety check to prevent infinite loop
+            if (counter > 100) {
+              throw new Error('Could not generate unique slug after 100 attempts');
+            }
+          }
+          
+          console.log(`Using unique slug: ${finalSlug}`);
+        }
+
         // Prepare question data
         const questionData = {
-          slug: generated.slug,
+          slug: finalSlug,
           question: generated.question,
           short_answer: generated.short_answer || null,
           verdict: generated.verdict || null,
