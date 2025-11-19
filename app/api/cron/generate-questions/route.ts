@@ -113,25 +113,52 @@ export async function POST(request: NextRequest) {
     // Query ideas table with proper queue logic
     // Status = 'pending' OR 'new' (support both for backward compatibility)
     // Also include 'processing' that are older than 1 hour (stuck processing)
-    // Note: We filter by generated_question_id in code below since column may not exist yet
-    // Order by created_at (oldest first)
+    // Exclude ideas that already have generated_question_id
+    // Order by RANDOM() to ensure variety each day
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const { data: allIdeas, error: ideasError } = await supabaseAdmin
+    
+    // First, try to query with generated_question_id filter if column exists
+    // We'll use a raw SQL query to handle the random ordering and null check properly
+    let ideasQuery = supabaseAdmin
       .from('ideas')
       .select('*')
       .or(`status.in.(pending,new),and(status.eq.processing,updated_at.lt.${oneHourAgo})`)
-      .order('created_at', { ascending: true })
-      .limit(batchSize * 2); // Get more to account for filtering in code
+      .is('generated_question_id', null)
+      .limit(batchSize * 3); // Get more candidates for randomization
     
-    // Filter out ideas that already have generated_question_id (if column exists)
-    const ideas = (allIdeas || []).filter((idea: any) => {
-      // If the property doesn't exist or is null, include it
-      return idea.generated_question_id === undefined || idea.generated_question_id === null;
-    }).slice(0, batchSize); // Limit to batchSize after filtering
-
-    if (ideasError) {
+    const { data: allIdeas, error: ideasError } = await ideasQuery;
+    
+    // If the query failed due to missing column, fall back to code-based filtering
+    let ideas = allIdeas || [];
+    if (ideasError && (ideasError.message?.includes('does not exist') || ideasError.message?.includes('column'))) {
+      console.warn('generated_question_id column does not exist. Using code-based filtering.');
+      const { data: fallbackIdeas, error: fallbackError } = await supabaseAdmin
+        .from('ideas')
+        .select('*')
+        .or(`status.in.(pending,new),and(status.eq.processing,updated_at.lt.${oneHourAgo})`)
+        .limit(batchSize * 3);
+      
+      if (fallbackError) {
+        throw fallbackError;
+      }
+      
+      // Filter out ideas that already have generated_question_id
+      ideas = (fallbackIdeas || []).filter((idea: any) => {
+        return idea.generated_question_id === undefined || idea.generated_question_id === null;
+      });
+    } else if (ideasError) {
       throw ideasError;
     }
+    
+    // Randomize the selection to ensure variety each day
+    // Shuffle array using Fisher-Yates algorithm
+    for (let i = ideas.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [ideas[i], ideas[j]] = [ideas[j], ideas[i]];
+    }
+    
+    // Take only the batchSize number of ideas
+    ideas = ideas.slice(0, batchSize);
 
     if (!ideas || ideas.length === 0) {
       return NextResponse.json({
@@ -470,3 +497,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
