@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { formatCategoryName } from '@/lib/categories';
+import { getCategoryById } from '@/lib/categories';
 
 interface QuestionOfTheDayProps {
   id: string;
@@ -39,9 +39,25 @@ export default function QuestionOfTheDay({
         </p>
       )}
       <div className="flex items-center gap-4 mb-6">
-        <span className="px-4 py-2 bg-white/20 rounded-full text-sm font-medium">
-          {formatCategoryName(category)}
-        </span>
+        {(() => {
+          const categoryDef = getCategoryById(category);
+          if (!categoryDef) {
+            // Fallback for invalid categories
+            return (
+              <span className="px-4 py-2 bg-white/20 rounded-full text-sm font-medium">
+                {category}
+              </span>
+            );
+          }
+          return (
+            <Link
+              href={`/category/${categoryDef.slug}`}
+              className="px-4 py-2 bg-white/20 rounded-full text-sm font-medium hover:bg-white/30 transition-colors"
+            >
+              {categoryDef.label}
+            </Link>
+          );
+        })()}
         {verdict && (
           <span
             className={`px-4 py-2 rounded-full text-sm font-medium ${

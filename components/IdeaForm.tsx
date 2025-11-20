@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CATEGORIES, type Category } from '@/lib/categories';
+import { CATEGORIES, type CategoryId } from '@/lib/categories';
 
 export default function IdeaForm() {
   const router = useRouter();
@@ -11,13 +11,13 @@ export default function IdeaForm() {
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState<{
     proposed_question: string;
-    category: Category;
+    category: CategoryId;
     tags: string;
     notes: string;
     priority: string;
   }>({
     proposed_question: '',
-    category: CATEGORIES[0],
+    category: CATEGORIES[0].id,
     tags: '',
     notes: '',
     priority: '',
@@ -60,7 +60,7 @@ export default function IdeaForm() {
         setSuccess(true);
         setFormData({
           proposed_question: '',
-          category: CATEGORIES[0],
+          category: CATEGORIES[0].id,
           tags: '',
           notes: '',
           priority: '',
@@ -124,14 +124,14 @@ export default function IdeaForm() {
           <select
             value={formData.category}
             onChange={(e) =>
-              setFormData({ ...formData, category: e.target.value as Category })
+              setFormData({ ...formData, category: e.target.value as CategoryId })
             }
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
           >
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+              <option key={cat.id} value={cat.id}>
+                {cat.label}
               </option>
             ))}
           </select>

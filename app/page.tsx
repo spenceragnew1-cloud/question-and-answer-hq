@@ -78,7 +78,7 @@ export default async function HomePage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Browse by Category</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {CATEGORIES.map((category) => (
-              <CategoryCard key={category} category={category} />
+              <CategoryCard key={category.id} category={category.slug} />
             ))}
           </div>
         </section>

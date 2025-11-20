@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { getRelatedQuestions } from '@/lib/interlink';
-import { formatCategoryName } from '@/lib/categories';
+import { getCategoryById } from '@/lib/categories';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { notFound } from 'next/navigation';
@@ -82,8 +82,9 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
   const pageUrl = `${siteUrl}/questions/${question.slug}`;
-  const categoryName = formatCategoryName(question.category);
-  const categorySlug = question.category.toLowerCase();
+  const category = getCategoryById(question.category);
+  const categoryName = category?.label || question.category;
+  const categorySlug = category?.slug || question.category;
   const categoryUrl = `${siteUrl}/category/${categorySlug}`;
   const publishedIso = question.published_at || new Date().toISOString();
   const questionText = question.question;
@@ -295,9 +296,12 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
           {/* Meta Info */}
           <div className="border-t border-gray-200 pt-6 mt-8">
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-              <span className="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full font-medium">
-                {formatCategoryName(question.category)}
-              </span>
+              <Link
+                href={`/category/${categorySlug}`}
+                className="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full font-medium hover:bg-teal-100 transition-colors"
+              >
+                {categoryName}
+              </Link>
               {question.tags && question.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {question.tags.map((tag: string, idx: number) => (

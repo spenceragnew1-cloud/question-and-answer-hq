@@ -27,8 +27,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/category/science" className="hover:text-teal transition-colors">
-                  Science
+                <Link href="/category/nutrition" className="hover:text-teal transition-colors">
+                  Nutrition
                 </Link>
               </li>
             </ul>

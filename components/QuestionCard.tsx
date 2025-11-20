@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { formatCategoryName } from '@/lib/categories';
+import { getCategoryById } from '@/lib/categories';
 
 interface QuestionCardProps {
   id: string;
@@ -57,13 +57,26 @@ export default function QuestionCard({
         )}
       </Link>
       <div className="flex items-center justify-between">
-        <Link
-          href={`/category/${category}`}
-          onClick={(e) => e.stopPropagation()}
-          className="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-medium hover:bg-teal-100 transition-colors"
-        >
-          {formatCategoryName(category)}
-        </Link>
+        {(() => {
+          const categoryDef = getCategoryById(category);
+          if (!categoryDef) {
+            // Fallback for invalid categories
+            return (
+              <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                {category}
+              </span>
+            );
+          }
+          return (
+            <Link
+              href={`/category/${categoryDef.slug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-medium hover:bg-teal-100 transition-colors"
+            >
+              {categoryDef.label}
+            </Link>
+          );
+        })()}
         {published_at && (
           <span className="text-sm text-gray-500">
             {new Date(published_at).toLocaleDateString()}

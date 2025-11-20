@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import QuestionCard from '@/components/QuestionCard';
 import SearchBar from '@/components/SearchBar';
-import { CATEGORIES, formatCategoryName } from '@/lib/categories';
+import { CATEGORIES, getCategoryById } from '@/lib/categories';
 import type { Metadata } from 'next';
 
 interface SearchParams {
@@ -92,15 +92,15 @@ export default async function QuestionsPage({
             </a>
             {CATEGORIES.map((cat) => (
               <a
-                key={cat}
-                href={`/questions?category=${cat}`}
+                key={cat.id}
+                href={`/questions?category=${cat.id}`}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  selectedCategory === cat
+                  selectedCategory === cat.id
                     ? 'bg-teal text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                {formatCategoryName(cat)}
+                {cat.label}
               </a>
             ))}
           </div>

@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Category pages
   for (const category of CATEGORIES) {
     urls.push({
-      url: `${SITE_URL}/category/${category}`,
+      url: `${SITE_URL}/category/${category.slug}`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { generateQuestionAnswer } from '@/lib/openai';
+import { getCategoryById, type CategoryId } from '@/lib/categories';
 
 const CRON_SECRET = process.env.CRON_SECRET!;
 const poolSize = 50;
@@ -78,6 +79,26 @@ export async function POST(request: NextRequest) {
       try {
         console.log(`Processing idea ${idea.id}: ${idea.proposed_question}`);
 
+        // Validate category ID
+        const category = getCategoryById(idea.category);
+        if (!category) {
+          console.error(`Invalid category "${idea.category}" for idea ${idea.id}. Marking as error.`);
+          await supabaseAdmin
+            .from('ideas')
+            .update({
+              status: 'error',
+              processed_at: new Date().toISOString(),
+            })
+            .eq('id', idea.id);
+
+          results.push({
+            ideaId: idea.id,
+            success: false,
+            error: `Invalid category: ${idea.category}. Must be one of the valid category IDs.`,
+          });
+          continue;
+        }
+
         // Parse tags from comma-separated string to array
         const ideaTags =
           typeof idea.tags === 'string'
@@ -95,7 +116,7 @@ export async function POST(request: NextRequest) {
         try {
           generated = await generateQuestionAnswer(
             idea.proposed_question,
-            idea.category,
+            category.id,
             ideaTags,
             idea.notes || undefined
           );
@@ -172,13 +193,13 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        // Prepare question data
+        // Prepare question data - use validated category ID
         const questionData = {
           slug: generated.slug,
           question: generated.question,
           short_answer: generated.short_answer || null,
           verdict: generated.verdict || null,
-          category: idea.category,
+          category: category.id, // Use validated category ID
           summary: generated.summary || null,
           body_markdown: generated.body_markdown || null,
           evidence_json: generated.evidence || null,

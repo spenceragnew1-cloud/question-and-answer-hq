@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES, type CategoryId } from '@/lib/categories';
 
 interface Question {
   id?: string;
@@ -38,7 +38,7 @@ export default function QuestionForm({ question }: QuestionFormProps) {
     slug: question?.slug || '',
     short_answer: question?.short_answer || '',
     verdict: question?.verdict || null,
-    category: question?.category || CATEGORIES[0],
+    category: question?.category || CATEGORIES[0].id,
     summary: question?.summary || '',
     body_markdown: question?.body_markdown || '',
     tags: question?.tags || [],
@@ -148,13 +148,13 @@ export default function QuestionForm({ question }: QuestionFormProps) {
           </label>
           <select
             value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, category: e.target.value as CategoryId })}
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-gray-900 bg-white"
           >
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+              <option key={cat.id} value={cat.id}>
+                {cat.label}
               </option>
             ))}
           </select>

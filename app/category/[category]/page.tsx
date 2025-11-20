@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import QuestionCard from '@/components/QuestionCard';
-import { CATEGORIES, formatCategoryName, isValidCategory, getCategoryDescription } from '@/lib/categories';
+import { getCategoryBySlug } from '@/lib/categories';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ interface CategoryPageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-async function getCategoryQuestions(category: string, page: number = 1, initialLimit: number = 20) {
+async function getCategoryQuestions(categoryId: string, page: number = 1, initialLimit: number = 20) {
   const perPage = 12;
   
   // For first page (no page param or page=1), show initialLimit items
@@ -30,7 +30,7 @@ async function getCategoryQuestions(category: string, page: number = 1, initialL
   const { data, count } = await supabase
     .from('questions')
     .select('*', { count: 'exact' })
-    .eq('category', category)
+    .eq('category', categoryId)
     .eq('status', 'published')
     .order('published_at', { ascending: false })
     .range(offset, offset + limit - 1);
@@ -51,21 +51,22 @@ async function getCategoryQuestions(category: string, page: number = 1, initialL
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
-  const { category } = await params;
-  if (!isValidCategory(category)) {
+  const { category: categorySlug } = await params;
+  const category = getCategoryBySlug(categorySlug);
+  
+  if (!category) {
     return {
       title: 'Category Not Found',
     };
   }
 
-  const categoryName = formatCategoryName(category);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
   
   return {
-    title: `${categoryName} Questions | QuestionAndAnswerHQ`,
-    description: getCategoryDescription(category),
+    title: `${category.label} Questions | QuestionAndAnswerHQ`,
+    description: category.description,
     alternates: {
-      canonical: `${siteUrl}/category/${category}`,
+      canonical: `${siteUrl}/category/${category.slug}`,
     },
   };
 }
@@ -74,26 +75,26 @@ export default async function CategoryPage({
   params,
   searchParams,
 }: CategoryPageProps) {
-  const { category } = await params;
+  const { category: categorySlug } = await params;
   const { page: pageParam } = await searchParams;
   
-  if (!isValidCategory(category)) {
+  const category = getCategoryBySlug(categorySlug);
+  if (!category) {
     notFound();
   }
 
   const page = parseInt(pageParam || '1', 10);
-  const { questions, total, totalPages } = await getCategoryQuestions(category, page, 20);
-  const categoryName = formatCategoryName(category);
-  const description = getCategoryDescription(category);
+  // Query by category ID (the normalized value stored in the database)
+  const { questions, total, totalPages } = await getCategoryQuestions(category.id, page, 20);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://questionandanswerhq.com';
-  const categoryUrl = `${siteUrl}/category/${category}`;
+  const categoryUrl = `${siteUrl}/category/${category.slug}`;
 
   // CollectionPage JSON-LD schema
   const collectionSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${categoryName} Questions`,
-    description: description,
+    name: `${category.label} Questions`,
+    description: category.description,
     url: categoryUrl,
     mainEntity: {
       '@type': 'ItemList',
@@ -121,10 +122,10 @@ export default async function CategoryPage({
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          {categoryName}
+          {category.label}
         </h1>
         <p className="text-lg text-gray-600 mb-8 max-w-3xl">
-          {description}
+          {category.description}
         </p>
 
         {questions.length > 0 ? (
@@ -148,7 +149,7 @@ export default async function CategoryPage({
             {showViewAllButton && (
               <div className="text-center mb-8">
                 <Link
-                  href={`/category/${category}?page=2`}
+                  href={`/category/${category.slug}?page=2`}
                   className="inline-block px-6 py-3 bg-teal text-white rounded-lg hover:bg-teal-dark transition-colors font-medium"
                 >
                   View All {total} Questions →
@@ -161,7 +162,7 @@ export default async function CategoryPage({
               <div className="flex justify-center items-center gap-4 mt-8">
                 {page > 1 && (
                   <Link
-                    href={`/category/${category}?page=${page - 1}`}
+                    href={`/category/${category.slug}?page=${page - 1}`}
                     className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
                     Previous
@@ -172,7 +173,7 @@ export default async function CategoryPage({
                 </span>
                 {page < totalPages && (
                   <Link
-                    href={`/category/${category}?page=${page + 1}`}
+                    href={`/category/${category.slug}?page=${page + 1}`}
                     className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
                     Next
