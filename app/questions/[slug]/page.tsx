@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import { getRelatedQuestions } from '@/lib/interlink';
 import { getCategoryById } from '@/lib/categories';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { notFound } from 'next/navigation';
@@ -184,6 +185,18 @@ export default async function QuestionPage({ params }: QuestionPageProps) {
       <div className="min-h-screen bg-gray-bg">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <article className="bg-white rounded-lg shadow-sm p-8 border border-gray-200">
+          {/* Breadcrumbs */}
+          <Breadcrumbs
+            segments={[
+              { label: 'Home', href: '/' },
+              ...(category
+                ? [{ label: category.label, href: `/category/${category.slug}` }]
+                : []),
+              { label: question.question },
+            ]}
+            className="mb-6"
+          />
+          
           {/* Question */}
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
             {question.question}
