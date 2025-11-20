@@ -124,8 +124,8 @@ export default async function CategoryPage({
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           {category.label}
         </h1>
-        <p className="text-lg text-gray-600 mb-8 max-w-3xl">
-          {category.description}
+        <p className="text-lg text-gray-600 mb-8 max-w-3xl leading-relaxed">
+          {category.intro}
         </p>
 
         {questions.length > 0 ? (

@@ -16,6 +16,7 @@ export interface CategoryDef {
   slug: string;
   label: string;
   description: string;
+  intro: string;
 }
 
 export const CATEGORIES: CategoryDef[] = [
@@ -24,66 +25,77 @@ export const CATEGORIES: CategoryDef[] = [
     slug: 'general_health',
     label: 'Health & Wellness',
     description: 'Evidence-based answers for health, wellness, and healthy living.',
+    intro: 'Health & Wellness covers evidence-based advice on healthy living, disease prevention, and everyday habits that support long-term health. These answers help people build sustainable routines and make informed decisions about their well-being. We provide practical guidance backed by current research to help you navigate health choices confidently.',
   },
   {
     id: 'nutrition',
     slug: 'nutrition',
     label: 'Nutrition & Diet',
     description: 'Food, diet, and nutrition questions backed by research.',
+    intro: 'Nutrition & Diet provides research-backed guidance on healthy eating, nutrient balance, weight management, and dietary habits. These answers distill current scientific evidence into simple, practical recommendations. Whether you\'re looking to improve your diet, manage weight, or understand how food affects your health, we break down the science into actionable advice.',
   },
   {
     id: 'sleep',
     slug: 'sleep',
     label: 'Sleep',
     description: 'Sleep quality, rest, and recovery science.',
+    intro: 'Sleep quality is fundamental to physical health, mental clarity, and overall well-being. This category explores evidence-based strategies for improving sleep hygiene, understanding sleep cycles, and addressing common sleep challenges. Our answers help you optimize your rest and recovery for better performance in all areas of life.',
   },
   {
     id: 'fitness_exercise',
     slug: 'fitness_exercise',
     label: 'Fitness & Exercise',
     description: 'Workouts, training, and staying active.',
+    intro: 'Fitness & Exercise offers science-backed insights into effective workouts, training methods, and staying active at any fitness level. These answers help you build effective exercise routines, prevent injuries, and understand how different types of training affect your body. Whether you\'re just starting out or looking to optimize your current routine, we provide practical, research-supported guidance.',
   },
   {
     id: 'parenting',
     slug: 'parenting',
     label: 'Parenting',
     description: 'Family, raising kids, and parenting science.',
+    intro: 'Parenting brings countless questions about child development, behavior, health, and family dynamics. This category provides evidence-based answers grounded in child development research and parenting science. We help parents make informed decisions about their children\'s wellbeing, from infancy through the teenage years, backed by current research and expert insights.',
   },
   {
     id: 'relationships',
     slug: 'relationships',
     label: 'Relationships',
     description: 'Communication, connection, and relationship skills.',
+    intro: 'Healthy relationships require effective communication, emotional intelligence, and practical skills for navigating conflict and building connection. This category explores research-backed strategies for improving relationships with partners, family, friends, and colleagues. Our answers draw from psychology and relationship science to provide actionable guidance for building stronger, more fulfilling connections.',
   },
   {
     id: 'home_cleaning',
     slug: 'home_cleaning',
     label: 'Home & Cleaning',
     description: 'Cleaning, organizing, and maintaining your home.',
+    intro: 'Home & Cleaning covers practical strategies for keeping your living space clean, organized, and healthy. These answers explore effective cleaning methods, organization systems, and home maintenance tips backed by research. We help you create a more comfortable and hygienic living environment through evidence-based approaches to household management.',
   },
   {
     id: 'cooking_food',
     slug: 'cooking_food',
     label: 'Cooking & Food',
     description: 'Cooking basics, kitchen tips, and food science.',
+    intro: 'Cooking & Food combines practical kitchen skills with food science to help you become a better cook and make smarter food choices. These answers explore cooking techniques, ingredient science, food safety, and kitchen efficiency. Whether you\'re learning the basics or looking to refine your culinary skills, we provide evidence-based guidance to enhance your cooking and eating experience.',
   },
   {
     id: 'money_finance',
     slug: 'money_finance',
     label: 'Money & Finance',
     description: 'Saving, budgeting, and personal finance advice.',
+    intro: 'Money & Finance provides evidence-based guidance on personal finance, budgeting, saving strategies, and making informed financial decisions. These answers help you build financial literacy and develop practical money management skills. We break down complex financial concepts into clear, actionable advice to help you achieve your financial goals and build long-term security.',
   },
   {
     id: 'productivity',
     slug: 'productivity',
     label: 'Productivity & Work',
     description: 'Workflows, focus, and productivity strategies.',
+    intro: 'Productivity & Work explores research-backed methods for improving focus, managing time, and achieving more with less stress. These answers cover effective workflows, time management techniques, and strategies for maintaining focus in a distracted world. We help you work smarter by applying evidence-based productivity principles that have been tested and proven effective.',
   },
   {
     id: 'mental_health',
     slug: 'mental_health',
     label: 'Mental Health & Mindset',
     description: 'Mindset, stress reduction, and psychological well-being.',
+    intro: 'Mental Health & Mindset addresses strategies for managing stress, building resilience, and maintaining psychological well-being. These answers draw from psychology and neuroscience to provide evidence-based approaches to mental health. We help you understand how your mind works and provide practical tools for coping with challenges, managing emotions, and cultivating a healthier mindset.',
   },
 ];
 
