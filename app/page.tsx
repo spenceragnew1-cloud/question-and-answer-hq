@@ -120,7 +120,124 @@ export default async function HomePage() {
         <section className="mb-12">
           <EmailSignup />
         </section>
+
+        {/* Frequently Asked Questions */}
+        <section className="mt-16">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-900">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-medium text-lg text-gray-900 mb-2">
+                What is QuestionAndAnswerHQ?
+              </h3>
+              <p className="text-gray-600">
+                QuestionAndAnswerHQ provides research-backed answers to everyday
+                questions across health, nutrition, fitness, science,
+                relationships, home living, and more. Each question is written
+                to be simple, factual, and helpful.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-medium text-lg text-gray-900 mb-2">
+                How do you create the answers?
+              </h3>
+              <p className="text-gray-600">
+                Our content is produced using a combination of human oversight
+                and AI-assisted research. Each answer goes through a review
+                process to ensure clarity, accuracy, and alignment with trusted
+                scientific sources.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-medium text-lg text-gray-900 mb-2">
+                How often are new questions published?
+              </h3>
+              <p className="text-gray-600">
+                New questions are published automatically every day, helping the
+                site grow consistently while covering more topics over time.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-medium text-lg text-gray-900 mb-2">
+                Where does your research come from?
+              </h3>
+              <p className="text-gray-600">
+                Sources include peer-reviewed studies, PubMed articles, medical
+                organizations, government research websites, and reputable
+                science-based publications.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-medium text-lg text-gray-900 mb-2">
+                Can I trust the accuracy of the answers?
+              </h3>
+              <p className="text-gray-600">
+                Yes. Every answer includes sources, citations, or references to
+                authoritative research. Our review process ensures the content
+                remains reliable and easy to understand.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
+
+      {/* FAQPage JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'What is QuestionAndAnswerHQ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'QuestionAndAnswerHQ provides research-backed answers to everyday questions across health, nutrition, fitness, science, relationships, home living, and more. Each question is written to be simple, factual, and helpful.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How do you create the answers?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Our content is produced using a combination of human oversight and AI-assisted research. Each answer goes through a review process to ensure clarity, accuracy, and alignment with trusted scientific sources.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How often are new questions published?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'New questions are published automatically every day, helping the site grow consistently while covering more topics over time.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Where does your research come from?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Sources include peer-reviewed studies, PubMed articles, medical organizations, government research websites, and reputable science-based publications.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Can I trust the accuracy of the answers?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. Every answer includes sources, citations, or references to authoritative research. Our review process ensures the content remains reliable and easy to understand.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </div>
   );
 }
