@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { formatCategoryName } from '@/lib/categories';
 
@@ -28,8 +30,8 @@ export default function QuestionCard({
   };
 
   return (
-    <Link href={`/questions/${slug}`}>
-      <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200">
+    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200">
+      <Link href={`/questions/${slug}`} className="block">
         <div className="flex items-start justify-between mb-3">
           <h3 className="text-xl font-semibold text-gray-900 flex-1 pr-4">
             {question}
@@ -53,18 +55,22 @@ export default function QuestionCard({
             {short_answer || summary}
           </p>
         )}
-        <div className="flex items-center justify-between">
-          <span className="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-medium">
-            {formatCategoryName(category)}
+      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href={`/category/${category}`}
+          onClick={(e) => e.stopPropagation()}
+          className="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-medium hover:bg-teal-100 transition-colors"
+        >
+          {formatCategoryName(category)}
+        </Link>
+        {published_at && (
+          <span className="text-sm text-gray-500">
+            {new Date(published_at).toLocaleDateString()}
           </span>
-          {published_at && (
-            <span className="text-sm text-gray-500">
-              {new Date(published_at).toLocaleDateString()}
-            </span>
-          )}
-        </div>
+        )}
       </div>
-    </Link>
+    </div>
   );
 }
 
