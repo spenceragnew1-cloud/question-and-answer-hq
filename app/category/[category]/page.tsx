@@ -124,12 +124,18 @@ export default async function CategoryPage({
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           {category.label}
         </h1>
-        <p className="text-lg text-gray-600 mb-8 max-w-3xl leading-relaxed">
+        <p className="text-lg text-gray-600 mb-6 max-w-3xl leading-relaxed">
           {category.intro}
         </p>
+        {category.longIntro && (
+          <section className="prose prose-invert max-w-none mb-10">
+            <p>{category.longIntro}</p>
+          </section>
+        )}
 
         {questions.length > 0 ? (
           <>
+            <h2 className="text-xl font-semibold mb-4">Most Helpful Questions</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {questions.map((question) => (
                 <QuestionCard
@@ -186,6 +192,43 @@ export default async function CategoryPage({
           <p className="text-gray-500 text-center py-12">
             No questions published in this category yet.
           </p>
+        )}
+
+        {category.subtopics && category.subtopics.length > 0 && (
+          <section className="mt-10">
+            <h2 className="text-xl font-semibold mb-4">Subtopics you might explore</h2>
+            <div className="flex flex-wrap gap-2">
+              {category.subtopics.map((topic) => (
+                <span
+                  key={topic}
+                  className="inline-block rounded-full bg-slate-800 px-3 py-1 text-sm text-slate-200 transition hover:bg-slate-700"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {category.faqs && category.faqs.length > 0 && (
+          <section className="mt-10">
+            <h2 className="text-xl font-semibold mb-4">Category FAQs</h2>
+            <div className="space-y-3">
+              {category.faqs.map((faq, idx) => (
+                <details
+                  key={idx}
+                  className="group rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3"
+                >
+                  <summary className="cursor-pointer text-sm font-medium text-slate-100">
+                    {faq.question}
+                  </summary>
+                  <p className="mt-2 text-sm text-slate-300">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </div>

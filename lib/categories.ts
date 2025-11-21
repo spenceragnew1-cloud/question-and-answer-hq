@@ -17,6 +17,12 @@ export interface CategoryDef {
   label: string;
   description: string;
   intro: string;
+  longIntro?: string;
+  faqs?: {
+    question: string;
+    answer: string;
+  }[];
+  subtopics?: string[];
 }
 
 export const CATEGORIES: CategoryDef[] = [
@@ -26,6 +32,33 @@ export const CATEGORIES: CategoryDef[] = [
     label: 'Health & Wellness',
     description: 'Evidence-based answers for health, wellness, and healthy living.',
     intro: 'Health & Wellness covers evidence-based advice on healthy living, disease prevention, and everyday habits that support long-term health. These answers help people build sustainable routines and make informed decisions about their well-being. We provide practical guidance backed by current research to help you navigate health choices confidently.',
+    longIntro:
+      'Health & Wellness covers evidence-based advice on healthy living, disease prevention, energy, recovery, and everyday lifestyle choices. This category helps readers understand how sleep, movement, stress, nutrition, and habits interact to support long-term well-being. The goal is to translate scientific research into clear, practical guidance that feels doable in real life.',
+    faqs: [
+      {
+        question: 'What kinds of topics are included in Health & Wellness?',
+        answer:
+          'The Health & Wellness category includes questions about daily habits, prevention strategies, immune function, energy, recovery, and lifestyle choices that impact long-term well-being.',
+      },
+      {
+        question: 'Is the Health & Wellness information medical advice?',
+        answer:
+          'No. The information in Health & Wellness is educational and based on current research, but it is not a substitute for personal medical advice from a qualified professional.',
+      },
+      {
+        question: 'How can I use this category to improve my health?',
+        answer:
+          'You can browse questions that match your current goals—such as improving sleep, managing stress, or building healthier routines—and apply the practical suggestions that fit your situation.',
+      },
+    ],
+    subtopics: [
+      'Sleep quality and routines',
+      'Stress and recovery',
+      'Immune health basics',
+      'Daily movement and posture',
+      'Energy and fatigue',
+      'Healthy habit building',
+    ],
   },
   {
     id: 'nutrition',
