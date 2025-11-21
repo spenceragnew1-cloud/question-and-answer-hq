@@ -129,6 +129,52 @@ export const CATEGORIES: CategoryDef[] = [
     label: 'Sleep',
     description: 'Sleep quality, rest, and recovery science.',
     intro: 'Sleep quality is fundamental to physical health, mental clarity, and overall well-being. This category explores evidence-based strategies for improving sleep hygiene, understanding sleep cycles, and addressing common sleep challenges. Our answers help you optimize your rest and recovery for better performance in all areas of life.',
+    longIntro: `Sleep is one of the most powerful tools we have for improving both daily well-being and long-term health. In this category, we explore the science of restful sleep, evidence-based habits, and practical strategies for improving the quality and consistency of your nightly rest. Good sleep affects nearly every system of the body — from metabolism, immune function, and hormonal balance to muscle recovery, learning, and emotional regulation.
+
+Many people struggle with inconsistent sleep patterns, light exposure at the wrong times, excessive stress, or difficulty winding down. We examine what the research says about circadian rhythms, sleep cycles, deep sleep, REM sleep, and how behaviors throughout the day influence nightly rest. This includes topics like caffeine timing, nighttime routines, screen exposure, breathing techniques, environmental changes, and how lifestyle factors such as exercise, nutrition, and stress interact with sleep quality.
+
+For those who train or live an active lifestyle, sleep plays an especially important role in recovery and performance. Studies consistently show that even small improvements in sleep can speed muscle repair, improve mood and focus, and reduce injury risk. Whether you're an athlete, a parent trying to get better rest, or simply someone who wants more energy during the day, understanding how sleep works gives you the tools to create healthier routines.
+
+If you're unsure where to begin, explore the helpful questions below. You’ll find practical suggestions grounded in research — small, sustainable steps that can help you fall asleep faster, wake up feeling more refreshed, and build healthier habits over time.`,
+    subtopics: [
+      'Circadian rhythm and sleep cycles',
+      'Deep sleep vs REM sleep',
+      'Bedtime routines and wind-down habits',
+      'Caffeine timing and stimulant effects',
+      'Light exposure and screen impact',
+      'Sleep for recovery and performance',
+      'Stress, anxiety, and racing thoughts',
+      'Napping and daytime sleepiness',
+      'Environmental changes for better sleep',
+      'How exercise affects sleep',
+    ],
+    faqs: [
+      {
+        question: 'What kinds of questions are included in the Sleep category?',
+        answer:
+          'This category covers research-backed answers about falling asleep faster, improving sleep quality, recovering from training, managing circadian rhythms, and building better nightly routines.',
+      },
+      {
+        question: 'How much sleep does the average adult need?',
+        answer:
+          'Most adults need 7–9 hours of sleep per night, though factors like training volume, stress, and health conditions can influence individual needs.',
+      },
+      {
+        question: 'Does screen time really affect sleep?',
+        answer:
+          'Yes. Bright or blue-rich light in the evening can delay melatonin release and push your sleep cycle later, making it harder to fall asleep.',
+      },
+      {
+        question: 'Can improving sleep help athletic recovery?',
+        answer:
+          'Absolutely. Quality sleep supports muscle repair, hormone regulation, immune function, and mental focus — all essential for training and performance.',
+      },
+      {
+        question: 'Is this information a substitute for medical advice?',
+        answer:
+          'No. The Sleep category offers educational, evidence-based guidance, but it does not replace personalized medical advice or treatment.',
+      },
+    ],
   },
   {
     id: 'fitness_exercise',
