@@ -326,6 +326,47 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Home & Cleaning',
     description: 'Cleaning, organizing, and maintaining your home.',
     intro: 'Home & Cleaning covers practical strategies for keeping your living space clean, organized, and healthy. These answers explore effective cleaning methods, organization systems, and home maintenance tips backed by research. We help you create a more comfortable and hygienic living environment through evidence-based approaches to household management.',
+    longIntro:
+      'Home & Cleaning is all about making your living space healthier, easier to maintain, and less stressful to manage. This category provides clear, research-informed answers to everyday home questions — from removing stains and odors to cleaning safely, organizing efficiently, and preventing common household problems. The goal is simple: help you solve real home issues without wasted time or guesswork.\n\nA lot of cleaning advice online is inconsistent — one source says vinegar fixes everything, another says never use it. Here we focus on what actually works based on chemistry, material safety, and practical experience. You’ll find guidance on cleaning different surfaces, choosing safe products, preventing damage, and understanding when household “hacks” help versus when they make things worse.\n\nThis hub also covers smart routines for keeping a clean home with less effort. Small systems — like weekly resets, spot-cleaning habits, and simple organization strategies — prevent mess from piling up and make cleaning feel manageable. We also include common troubleshooting questions like how to get rid of mold, remove sticky residue, clean appliances, or freshen carpets.\n\nIf you’re not sure where to start, browse the helpful and trending questions below. Learning a few reliable methods and product principles makes home care faster, safer, and dramatically less frustrating over time.',
+    subtopics: [
+      'Stain and odor removal',
+      'Surface-specific cleaning (wood, tile, glass, etc.)',
+      'Safe cleaning products and mixtures',
+      'Mold, mildew, and moisture prevention',
+      'Laundry and fabric care',
+      'Kitchen and bathroom deep cleaning',
+      'Appliance cleaning and maintenance',
+      'Organization and decluttering',
+      'Pet messes and hair cleanup',
+      'Quick daily cleaning routines',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in Home & Cleaning?',
+        answer:
+          'This category covers stain removal, surface cleaning, safe product use, mold prevention, laundry care, appliance cleaning, organization, and simple home routines.',
+      },
+      {
+        question: 'What cleaning products are safe to mix?',
+        answer:
+          'Most products should not be mixed unless explicitly labeled safe. Some combinations (like bleach with ammonia or vinegar) can create dangerous fumes.',
+      },
+      {
+        question: 'What’s the best way to remove stubborn stains?',
+        answer:
+          'The best method depends on the material and stain type. Acting quickly, using the right solvent, and avoiding heat until the stain is gone are key principles.',
+      },
+      {
+        question: 'How often should I deep-clean my home?',
+        answer:
+          'Most homes benefit from weekly targeted deep-cleaning (bathroom, kitchen, floors) plus seasonal resets for areas like windows, vents, and appliances.',
+      },
+      {
+        question: 'Are natural cleaners like vinegar always effective?',
+        answer:
+          'They can work well for some jobs, but not all. We explain when natural options are useful and when stronger cleaners are safer or more effective.',
+      },
+    ],
   },
   {
     id: 'cooking_food',
@@ -340,6 +381,47 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Money & Finance',
     description: 'Saving, budgeting, and personal finance advice.',
     intro: 'Money & Finance provides evidence-based guidance on personal finance, budgeting, saving strategies, and making informed financial decisions. These answers help you build financial literacy and develop practical money management skills. We break down complex financial concepts into clear, actionable advice to help you achieve your financial goals and build long-term security.',
+    longIntro:
+      'Money & Finance covers practical, evidence-informed answers to everyday financial questions — from budgeting and saving to debt, credit, investing, and smart financial habits. This category is built for real people trying to make good decisions without getting overwhelmed by jargon or conflicting advice. The goal is to explain common financial topics clearly so you can take action with confidence.\n\nMost financial success comes from simple fundamentals done consistently: spending less than you earn, building an emergency buffer, avoiding high-interest debt, and using long-term investing to grow wealth. But people often get stuck on specific questions — how to pay off debt faster, what a good credit score is, how much to save, whether to invest or build cash first, and how to avoid common traps.\n\nHere we focus on clarity and practicality. You’ll find questions on debt payoff strategies, credit cards, interest rates, saving routines, beginner investing principles, financial psychology, and how to build stability over time. We aim to highlight what’s supported by reputable consensus and basic financial math, while also explaining tradeoffs so you can choose what fits your goals.\n\nIf you’re not sure where to start, explore the helpful and trending questions below. Small improvements — like automating savings, tracking expenses, or understanding how interest works — compound over time into major financial progress.',
+    subtopics: [
+      'Budgeting and expense tracking',
+      'Saving money and emergency funds',
+      'Debt payoff strategies',
+      'Credit scores and credit cards',
+      'Interest rates and loans',
+      'Beginner investing basics',
+      'Retirement planning fundamentals',
+      'Financial habits and psychology',
+      'Making extra income',
+      'Avoiding financial scams',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in Money & Finance?',
+        answer:
+          'This category covers budgeting, saving, debt payoff, credit scores, interest rates, beginner investing, retirement basics, and practical financial habits.',
+      },
+      {
+        question: 'What’s the best first step to improving my finances?',
+        answer:
+          'Start by tracking your spending and building a simple budget. Knowing where your money goes is the foundation for saving and debt reduction.',
+      },
+      {
+        question: 'Should I pay off debt or save first?',
+        answer:
+          'It depends on the debt. High-interest debt should usually be prioritized, but having a small emergency fund first can prevent new debt.',
+      },
+      {
+        question: 'How much should I have in an emergency fund?',
+        answer:
+          'A common guideline is 3–6 months of living expenses, but even a smaller buffer is valuable when you’re starting out.',
+      },
+      {
+        question: 'Is this financial advice personalized?',
+        answer:
+          'No. These answers are educational and research-informed, but they don’t replace personalized advice from a qualified financial professional.',
+      },
+    ],
   },
   {
     id: 'productivity',
