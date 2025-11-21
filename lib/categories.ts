@@ -347,6 +347,47 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Productivity & Work',
     description: 'Workflows, focus, and productivity strategies.',
     intro: 'Productivity & Work explores research-backed methods for improving focus, managing time, and achieving more with less stress. These answers cover effective workflows, time management techniques, and strategies for maintaining focus in a distracted world. We help you work smarter by applying evidence-based productivity principles that have been tested and proven effective.',
+    longIntro:
+      'Productivity isn’t about doing more — it’s about doing what matters with less stress, better focus, and sustainable energy. This category offers research-backed answers to everyday questions about getting organized, staying consistent, reducing procrastination, and building habits that support meaningful work. Whether you\'re a student, a parent, an entrepreneur, or someone trying to stay on top of life in general, productivity comes down to a few core skills that can be learned and practiced.\n\nMany productivity problems aren’t caused by laziness — they come from overwhelm, unclear priorities, poor systems, and mental fatigue. Here we explore evidence-based frameworks for setting goals, managing time, improving attention, and designing routines that make good behavior easier. You’ll find topics like task batching, deep work, habit stacking, decision fatigue, daily planning, organization, and how environment influences behavior.\n\nWe also emphasize the human side of productivity. Sleep, stress, motivation, and emotional regulation all affect performance. Sustainable productivity requires balancing output with recovery so that work doesn’t become burnout. Small changes, like structuring your morning, reducing distractions, or creating a reliable “shutdown routine,” can have a huge impact over time.\n\nIf you’re not sure where to start, browse the helpful and trending questions below. The goal is to give you clear, practical tools so you can work smarter, build momentum, and feel more in control of your days.',
+    subtopics: [
+      'Time management and daily planning',
+      'Breaking procrastination',
+      'Deep work and focus habits',
+      'Goal setting and follow-through',
+      'Building consistent routines',
+      'Reducing distractions',
+      'Organization systems',
+      'Motivation and discipline',
+      'Burnout prevention',
+      'Work-life balance',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in Productivity & Work?',
+        answer:
+          'This category covers research-backed strategies for time management, focus, routines, procrastination, organization, motivation, burnout prevention, and sustainable work habits.',
+      },
+      {
+        question: 'What’s the best way to stop procrastinating?',
+        answer:
+          'Start by reducing the size of the task, removing friction, and setting a clear first step. Small wins build momentum faster than waiting for motivation.',
+      },
+      {
+        question: 'How can I improve focus at work?',
+        answer:
+          'Minimizing distractions, batching tasks, using focused time blocks, and protecting sleep and recovery are some of the most effective evidence-based ways to improve focus.',
+      },
+      {
+        question: 'Are routines really important for productivity?',
+        answer:
+          'Yes. Reliable routines reduce decision fatigue and make progress automatic. Even simple morning or evening habits can dramatically improve consistency.',
+      },
+      {
+        question: 'How do I avoid burnout while staying productive?',
+        answer:
+          'Sustainable productivity requires recovery. Setting boundaries, scheduling breaks, prioritizing sleep, and focusing on fewer high-value tasks helps prevent burnout.',
+      },
+    ],
   },
   {
     id: 'mental_health',
