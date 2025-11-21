@@ -74,6 +74,68 @@ export const CATEGORIES: CategoryDef[] = [
     label: 'Animals & Wildlife',
     description: 'Wildlife, conservation, and animal science explained with evidence.',
     intro: 'Animals & Wildlife covers questions about conservation biology, animal behavior, and how humans coexist with wild species. We break down the research behind habitats, biodiversity, and responsible wildlife care so you can understand threats and rewards within a broader ecosystem perspective. Expect practical explanations of how animal science intersects with ecology, climate, and everyday choices.',
+    longIntro: `## Why Animals and Wildlife Matter
+
+Animals give us a daily reminder that we share the planet with countless other species, each of them adapted to their own climate, diet, and lifestyle. This hub explores those adaptations and behaviors in depth, so you can see how and why creatures hunt, forage, migrate, nest, sleep, and adapt to shifting conditions. We focus on what the research says about animal behavior and physiology, from tracking predator-prey cycles to decoding communication signals in birds or mammals. Knowing that wolves cooperate as packs, that owls use silent wings, or that elephants mourn their dead helps us appreciate the complex world outside our windows.
+
+## Habitats, Ecosystems, and the Places Animals Call Home
+
+Wildlife never exists on its own—it is always part of a habitat larger than itself. We cover what makes habitats resilient, how ecosystems rely on keystone species, and what happens when humans fragment forests or drain wetlands. The pages here examine deserts, wetlands, forests, oceans, and urban greenspaces. You’ll find clear explanations of food webs, ecological niches, migratory corridors, and how climate change shifts the availability of water and shelter. We also highlight the intersection of local knowledge and global conservation, showcasing how communities protect habitats and restore degraded land.
+
+## Humans, Wildlife, and Living Together Safely
+
+Human–wildlife interactions can be enriching, inspiring, and sometimes risky. This category answers questions about staying safe around unexpected visitors—like raccoons, snakes, coyotes, or bats—while minimizing harm to the animal. We focus on evidence-based guidance around wildlife deterrents, coexistence strategies, and reporting protocols for injured or distressed creatures. You’ll also discover how urban wildlife adapt, how backyard feeders affect migration, and when to call professionals. Understanding animal cues enables calmer encounters and reduces the chance of conflict, while supporting coexistence through responsible backyard habitats.
+
+## Conservation, Endangered Species, and What You Can Do
+
+Every species plays a role in the tapestry of life. In this hub, we explain endangered species categories, how scientists assess population health, and what conservation tools make a difference (protected areas, captive breeding, habitat corridors, policy). We summarize the evidence around invasive species, rewilding, and community-led conservation. You’ll learn how simple actions—like planting native species, supporting responsible tourism, or advocating for local habitat protections—support the long-term survival of species threatened by habitat loss, pollution, or climate change. This is about turning knowledge into action.
+
+## Backyard Wildlife, Myths, and the Science Behind Animal Behavior
+
+Myths about animals abound: are bats villains? Do crows hold grudges? Should you feed or fear deer? We sift through common misconceptions using biology research and behavioral studies, so you can separate fact from folklore. This includes FAQs on animal intelligence, territorial signals, or why some animals become habituated to humans. We highlight how curiosity can transform into respectful appreciation rather than fear, and we provide practical tips for backyard wildlife watching, safe feeding, or discouraging nuisance species without harm.
+
+## Practical Routines for Pet-Free Wildlife Stewardship
+
+The final section turns to day-to-day decisions—how to set up a wildlife-friendly backyard, design bird-safe gardens, choose humane coexistence strategies, and troubleshoot common issues like odor, nests, or tracks. We break down cleaning, deterring, and monitoring strategies, all backed by studies on repellents, chemicals, and the safest materials. We also address the connection between animal habitats and broader well-being: spending time outdoors, creating soundscapes that support migratory birds, and reducing stress through daily nature interactions. Small, consistent steps—like keeping fresh water, planting shrubs, or setting up motion-sensitive lighting—make your space safer for both people and animals.`,
+    subtopics: [
+      'Animal behavior and communication',
+      'Habitats, ecosystems, and conservation',
+      'Human-wildlife coexistence tips',
+      'Backyard birds, mammals, and safety',
+      'Wildlife myths vs science',
+      'Conservation and endangered species updates',
+      'Safety protocols for wildlife encounters',
+      'Pet-free wildlife watching strategies',
+      'Responsible habitat design',
+      'Nature-based wellbeing and stewardship',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in Animals & Wildlife?',
+        answer:
+          'This category covers animal behavior, habitats, conservation, human-wildlife interactions, backyard wildlife, myths, and science-based safety around creatures big and small.',
+      },
+      {
+        question: 'How can I interact safely with wildlife in my neighborhood?',
+        answer:
+          'Keep a respectful distance, avoid feeding unless approved, secure trash, and learn the specific cues of the animals around you so you can minimize conflict while enjoying their presence.',
+      },
+      {
+        question: 'What are practical ways to support local wildlife?',
+        answer:
+          'Plant native species, maintain clean water sources, avoid pesticides, and provide shelter such as brush piles or birdhouses tailored to the species in your region.',
+      },
+      {
+        question: 'How do I dispel common myths about animals?',
+        answer:
+          'Check reputable biology or conservation sources; look for peer-reviewed studies that explain animal behavior rather than relying on folklore, and focus on observable cues instead of fear-based stories.',
+      },
+      {
+        question: 'Is this information a substitute for professional guidance?',
+        answer:
+          'No. These answers are educational and research-backed but are not a replacement for qualified wildlife rehabilitators, veterinarians, or conservation professionals when specialized care is needed.',
+      },
+    ],
   },
   {
     id: 'education_learning',
@@ -81,6 +143,84 @@ export const CATEGORIES: CategoryDef[] = [
     label: 'Education & Learning',
     description: 'Research-based guidance on learning strategies, skill acquisition, and education trends.',
     intro: 'Education & Learning focuses on cognitive strategies, study habits, and modern pedagogy. These answers explore how to learn more efficiently, master new skills, and keep up with emerging education research. Whether you are a lifelong learner, parent, or educator, we present evidence-backed techniques to boost retention, motivation, and clarity.',
+    longIntro: `## Why learning strategies matter
+
+Education is less about memorizing facts and more about building systems that let you understand, apply, and transfer knowledge. This category highlights research-backed learning strategies, cognitive science, and practical tips so you can approach study, skill development, and teaching with confidence. We walk through how different parts of the brain encode information, why spacing and retrieval practice boost memory, and how to align goals with meaningful practice.
+
+## Evidence-based methods for better learning
+
+Decades of learning science point to a handful of techniques that deliver the most reliable gains: spaced repetition instead of cramming, interleaving topics rather than studying one thing at a time, and testing yourself frequently. We explain how to build retrieval practice loops, vary your practice sessions, and pair new content with prior knowledge so your mental models deepen. We also highlight how to scaffold skills—from motor tasks to academic subjects—so you move from understanding to fluency.
+
+## Study habits that respect human limits
+
+Attention is finite, and modern life pulls it in every direction. That’s why we emphasize chunking study into manageable sessions, using timers, and designing distraction-free environments that support focus. You’ll find suggestions for planning sessions with clear objectives, using analog and digital tools to organize material, and knowing when to switch gears to maintain momentum without burning out. We cover the role of sleep, nutrition, hydration, and movement in consolidating learning.
+
+## Cognitive science for memory and skill acquisition
+
+Memory works best when you connect new concepts to existing frameworks, engage multiple senses, and revisit material over time. This section translates cognitive principles—such as the generation effect, dual coding, and elaboration—into actionable steps. We explain how to craft analogies, create visual summaries, and explain ideas aloud to solidify understanding. For procedural skills, we highlight deliberate practice, feedback loops, and the importance of reflection.
+
+## Lifelong learning and adaptive skill growth 
+
+Learning doesn’t stop after school. Whether you want to learn a language, pick up a new hobby, or stay relevant in your career, this hub offers frameworks for building sustainable learning habits. We discuss how to balance depth and breadth, how to build learning plans that pivot with your goals, and how to stay motivated when progress feels slow. We also cover how to join communities, mentor others, and teach what you’re learning—because teaching reinforces mastery.
+
+## Guidance for educators and parents
+
+Parents and educators play a role in shaping a learner’s mindset. We provide research-backed advice on how to provide constructive feedback, develop growth mindsets, foster curiosity, and reduce anxiety around assessments. You’ll find strategies for scaffolding challenges, using formative assessments, and making explanations relatable. This category covers crises like learning loss, remote instruction, and supporting neurodiverse learners with differentiated practices.
+
+## Practical routines for effective learning
+
+Tips in this section include daily review rituals, themed study sprints, creative note-taking, and recovering from plateaus. We share how to create cognitive "warm-ups" before deep work, how to integrate reflection after practice, and how to schedule breaks that reset attention. The emphasis is always on sustainable habits—small routines that compound rather than one-off hacks.
+
+## Learning myths versus science
+
+Misconceptions—like the idea of “learning styles” or the myth that you either have a learning talent or you don’t—persist in education. We debunk common myths with citations, clarify how neuroplasticity supports growth, and offer practical alternatives that rebuild trust in skill development. We also cover how to spot misinformation in viral study tips and how to evaluate sources critically.
+
+## Tools and tech for learning
+
+This hub also reviews evidence-backed tools: spaced repetition software, collaborative study platforms, multimedia creation for teaching, and note systems that align with retrieval practice. We weigh the benefits of tech against the costs and share tips for designing digital learning experiences that minimize cognitive overload.
+
+## Where to begin
+
+If you’re unsure where to start, scroll through the helpful and trending questions below. Each answer points you toward small, immediate steps—like planning a study session, setting up a practice log, or framing feedback positively. By leaning on science, not quick hacks, you can build a learning approach that is thoughtful, flexible, and deeply human.`,
+    subtopics: [
+      'Spacing, retrieval practice, and study cycles',
+      'Motivation, habit formation, and consistency',
+      'Cognitive biases and memory myths',
+      'Skill acquisition and deliberate practice',
+      'Multisensory learning and note-taking',
+      'Learning for adults and career pivoting',
+      'Feedback, reflection, and formative assessment',
+      'Digital tools that support learning science',
+      'Supporting neurodiverse and remote learners',
+      'Parenting and teaching growth mindsets',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in Education & Learning?',
+        answer:
+          'This category covers learning methods, study habits, cognitive science, memory, skill mastery, teaching strategies, lifelong learning, and practical academic routines.',
+      },
+      {
+        question: 'How can I improve retention when studying?',
+        answer:
+          'Use spaced repetition, frequent retrieval practice, and interleaving topics; actively recalling material strengthens memory more than rereading.',
+      },
+      {
+        question: 'What are quick ways to build better study habits?',
+        answer:
+          'Start with short, focused sessions, set clear objectives, reduce distractions, and celebrate small wins so motivation compounds over time.',
+      },
+      {
+        question: 'How does cognitive science inform teaching?',
+        answer:
+          'It shows that feedback, scaffolding, varied practice, and metacognitive prompts deepen learning because they align instruction with how the brain encodes and retrieves knowledge.',
+      },
+      {
+        question: 'Is this guidance a substitute for personalized teaching?',
+        answer:
+          'No. These answers are educational and research-backed but do not replace individualized instruction from tutors or learning specialists.',
+      },
+    ],
   },
   {
     id: 'nutrition',
@@ -326,8 +466,41 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Home & Cleaning',
     description: 'Cleaning, organizing, and maintaining your home.',
     intro: 'Home & Cleaning covers practical strategies for keeping your living space clean, organized, and healthy. These answers explore effective cleaning methods, organization systems, and home maintenance tips backed by research. We help you create a more comfortable and hygienic living environment through evidence-based approaches to household management.',
-    longIntro:
-      'Home & Cleaning is all about making your living space healthier, easier to maintain, and less stressful to manage. This category provides clear, research-informed answers to everyday home questions — from removing stains and odors to cleaning safely, organizing efficiently, and preventing common household problems. The goal is simple: help you solve real home issues without wasted time or guesswork.\n\nA lot of cleaning advice online is inconsistent — one source says vinegar fixes everything, another says never use it. Here we focus on what actually works based on chemistry, material safety, and practical experience. You’ll find guidance on cleaning different surfaces, choosing safe products, preventing damage, and understanding when household “hacks” help versus when they make things worse.\n\nThis hub also covers smart routines for keeping a clean home with less effort. Small systems — like weekly resets, spot-cleaning habits, and simple organization strategies — prevent mess from piling up and make cleaning feel manageable. We also include common troubleshooting questions like how to get rid of mold, remove sticky residue, clean appliances, or freshen carpets.\n\nIf you’re not sure where to start, browse the helpful and trending questions below. Learning a few reliable methods and product principles makes home care faster, safer, and dramatically less frustrating over time.',
+    longIntro: `## Why Home Care Matters
+
+Home & Cleaning is all about making your living space healthier, easier to maintain, and far less stressful. This category provides clear, research-informed answers to everyday home questions—whether you’re removing stains, tackling odors, organizing chaos, or repairing small household problems. The goal is simple: help you solve real home issues without wasted time or guesswork by translating chemistry, materials science, and practical experience into routines you can trust.
+
+## What Works (and What Doesn’t) in Home Cleaning
+
+There’s too much contradictory advice floating around; one article says vinegar fixes everything while another warns you never use it on anything. We focus on evidence-backed methods that respect the surfaces you live on. You’ll find the safest solvents for wood, stone, tile, and glass; how to choose detergents with fewer toxins; and why heat, pressure, or timing can make or break the result. We explain the science behind biodegradable cleaners, enzymatic stain removers, and when simple soap and water outperform expensive sprays.
+
+Understanding product safety is also key. Mixing certain cleaners—like bleach with ammonia or vinegar—can create harmful fumes, so we spell out the compatible combinations and safer alternatives. Homemade solutions are welcome when they’re honest about limits. Each answer explains the mechanism: how alkaline lifts grease, why acids dissolve mineral deposits, and when emulsifiers keep grime from resettling. That way you know what to expect before you scrub.
+
+## Habits & Routines That Keep Clutter from Coming Back
+
+Cleaning isn’t a single event; it is a set of sustainable habits. The hub walks through weekly resets, daily spot-cleaning habits, and seasonal deep dives so mess never piles up. We explore how timers, lists, and “project rooms” keep tasks manageable, how to break areas into bite-sized segments, and how to track maintenance for appliances, textiles, and tough materials.
+
+We also highlight routines that respect your energy—short evening touch-ups to prevent weekend chaos, dry dusting before mopping, and working from top to bottom so debris only flows downward. Data shows that consistency beats intensity, so we help you find a cadence that works for your life.
+
+## Habitats, Surfaces, and Problem Solvers
+
+The chapter on surfaces decodes the best techniques for wood, laminate, stone, tile, glass, upholstery, and fabrics. We outline what temperature or pH level each can tolerate, and we offer safe mechanical approaches—like using a soft brush or microfibre that won’t scratch. The section on appliances explains how to sanitize microwaves, degrease ovens, descale kettles, and keep vents from clogging, with clear steps so you never guess whether to use vinegar, citric acid, or a commercial descaler.
+
+## Preventing Moisture, Mold, and Pests
+
+Moisture invites mold, mildew, and pests into every corner. We cover ventilation strategies, humidity tracking, and how to fix small leaks before they cause big damage. When mold does appear, we break down the right cleaners, when to toss vs. restore affected materials, and how to protect vulnerable surfaces. The pest section outlines humane deterrents for insects and rodents that enter through cracks, and when it’s wiser to call a professional.
+
+## Everyday Cleaning for Real Life
+
+This hub doesn’t ignore the mess that comes with pets, kids, or busy schedules. You’ll get tips on removing pet hair, neutralizing odors, and managing spills quickly. We also tackle common questions like how to refresh carpets without a pricey machine, how to degrease kitchen cabinets, and how to keep bathrooms bright despite hard water. We emphasize practical actions—use a squeegee after showers, clean glass with a microfibre, keep a rotate-ready cleaning kit under the sink—so the work stays manageable.
+
+## Myths vs. Science When Caring for Interiors
+
+Urban legends about cleaning abound. We separate myth from method by referencing lab studies, materials research, and safety data. Why rubbing alcohol evicts grime but can dull your finish; why bleach should never meet ammonia; why “natural” vinegar may not sanitize; and how to recognize when an expensive “miracle” formula is just colored water.
+
+## Building a Cleaner, Safer Home
+
+If you’re not sure where to begin, start with the helpful and trending questions below. Learning a few reliable principles—like choosing the right solvent, tackling messes quickly, and building routines—makes home care faster, safer, and dramatically less frustrating over time. The hub is designed to help you solve immediate problems while strengthening a long-term maintenance mindset so your home stays welcoming and healthy year-round.`,
     subtopics: [
       'Stain and odor removal',
       'Surface-specific cleaning (wood, tile, glass, etc.)',
