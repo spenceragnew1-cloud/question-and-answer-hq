@@ -313,6 +313,47 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Mental Health & Mindset',
     description: 'Mindset, stress reduction, and psychological well-being.',
     intro: 'Mental Health & Mindset addresses strategies for managing stress, building resilience, and maintaining psychological well-being. These answers draw from psychology and neuroscience to provide evidence-based approaches to mental health. We help you understand how your mind works and provide practical tools for coping with challenges, managing emotions, and cultivating a healthier mindset.',
+    longIntro:
+      'Mental health affects every part of daily life — how we think, how we manage stress, how we communicate, and how we respond to challenges. This category focuses on evidence-based strategies for improving emotional well-being, reducing anxiety, understanding stress responses, and building healthier thought patterns. By exploring the psychology behind habits, emotions, and relationships, we aim to make mental health approachable, practical, and grounded in science.\n\nModern life creates constant demands on attention, performance, and emotional bandwidth. Many people struggle with racing thoughts, overwhelm, perfectionism, burnout, or difficulty regulating emotions. Here we break down tools from cognitive behavioral therapy (CBT), mindfulness, habit formation, and behavioral science to help you recognize triggers, shift unhelpful patterns, and develop greater resilience.\n\nMental health is also deeply connected to physical habits like sleep, exercise, and nutrition. Even small improvements in daily routines can create meaningful changes in how you feel. Understanding how the brain and body respond to stress, social pressure, or uncertainty empowers you to make choices that support long-term well-being.\n\nWhether you\'re navigating anxiety, trying to manage stress more effectively, or simply looking to build healthier mental habits, this hub provides clear, research-backed insights. Explore the helpful questions below to learn small, practical steps that can make your daily life more grounded, calm, and balanced.',
+    subtopics: [
+      'Managing stress and overwhelm',
+      'Understanding anxiety patterns',
+      'Mindfulness and grounding techniques',
+      'Cognitive behavioral tools',
+      'Emotional regulation strategies',
+      'Breaking negative thought cycles',
+      'Self-esteem and confidence',
+      'Mental health and daily habits',
+      'Sleep and mood connection',
+      'Healthy coping mechanisms',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in the Mental Health category?',
+        answer:
+          'This category covers stress management, anxiety, emotional regulation, mindfulness, CBT techniques, confidence, and research-backed mental health habits.',
+      },
+      {
+        question: 'What are practical ways to reduce daily stress?',
+        answer:
+          'Slowing down your breathing, setting boundaries, reducing overstimulation, organizing tasks, and creating wind-down routines all help manage daily stress.',
+      },
+      {
+        question: 'How can I break negative thought patterns?',
+        answer:
+          'Recognizing cognitive distortions, challenging assumptions, reframing thoughts, and practicing mindfulness can help shift unhelpful mental patterns.',
+      },
+      {
+        question: 'Does improving sleep help mental health?',
+        answer:
+          'Yes. Better sleep supports emotional regulation, lowers anxiety, improves mood, and enhances the brain’s ability to handle stress.',
+      },
+      {
+        question: 'Is this information a substitute for therapy?',
+        answer:
+          'No. These answers are educational and research-based, but they are not a replacement for professional mental health treatment.',
+      },
+    ],
   },
   {
     id: 'geography',

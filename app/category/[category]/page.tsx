@@ -4,6 +4,7 @@ import { getCategoryBySlug } from '@/lib/categories';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Script from 'next/script';
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
@@ -229,6 +230,26 @@ export default async function CategoryPage({
               ))}
             </div>
           </section>
+        )}
+        {category.faqs && category.faqs.length > 0 && (
+          <Script
+            id={`faq-schema-${category.id}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: category.faqs.map((f) => ({
+                  '@type': 'Question',
+                  name: f.question,
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: f.answer,
+                  },
+                })),
+              }),
+            }}
+          />
         )}
       </div>
     </div>
