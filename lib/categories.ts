@@ -230,6 +230,47 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Parenting',
     description: 'Family, raising kids, and parenting science.',
     intro: 'Parenting brings countless questions about child development, behavior, health, and family dynamics. This category provides evidence-based answers grounded in child development research and parenting science. We help parents make informed decisions about their children\'s wellbeing, from infancy through the teenage years, backed by current research and expert insights.',
+    longIntro:
+      'Parenting is one of the most meaningful and challenging roles in life. This category offers evidence-based answers to everyday parenting questions, from supporting emotional development and building healthy routines to improving communication and managing difficult behaviors. The goal is to provide clear, practical guidance that helps parents feel more confident and connected to their kids.\n\nChildren grow through predictable stages, but every family’s situation is unique. Here we focus on what research suggests about helping kids build resilience, handle big emotions, develop independence, and create strong family relationships. You’ll see topics on discipline, motivation, sleep, screen use, family dynamics, stress management, and how to support learning at home.\n\nParenting advice online can be overwhelming or overly rigid. Our approach emphasizes simple, sustainable strategies that work in real life — tools that help parents set boundaries with empathy, stay calm in hard moments, and guide kids toward healthier habits. Small adjustments in how we communicate, structure routines, or respond to behavior often lead to major improvements over time.\n\nWhether you’re parenting toddlers, school-age kids, or teens, this hub is designed to help you navigate common challenges with clarity and compassion. If you’re not sure where to start, explore the helpful questions below. You’ll find research-backed insights that support both your child’s growth and your own well-being as a parent.',
+    subtopics: [
+      'Managing big emotions in kids',
+      'Healthy discipline and boundaries',
+      'Building routines and consistency',
+      'Sleep and bedtime struggles',
+      'Screen time and technology habits',
+      'Motivation and confidence building',
+      'Parent-child communication skills',
+      'Handling stress as a parent',
+      'Independence and responsibility',
+      'Supporting learning at home',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in the Parenting category?',
+        answer:
+          'This category covers routines, discipline, emotional development, communication, sleep challenges, screen habits, confidence building, and research-based parenting strategies.',
+      },
+      {
+        question: 'What’s the best way to handle difficult behavior?',
+        answer:
+          'Start by staying calm, setting clear boundaries, and focusing on teaching skills rather than punishment. Consistency and empathy together work better than extremes.',
+      },
+      {
+        question: 'How can I help my child manage big emotions?',
+        answer:
+          'Labeling emotions, validating feelings, and teaching simple calming skills — like breathing, movement breaks, or quiet time — helps kids build emotional regulation.',
+      },
+      {
+        question: 'Do routines really matter for kids?',
+        answer:
+          'Yes. Predictable routines reduce stress, improve behavior, support sleep, and help kids feel secure. Small consistent habits often make parenting easier.',
+      },
+      {
+        question: 'Is this advice a substitute for medical or psychological care?',
+        answer:
+          'No. These answers are educational and research-based, but they are not a replacement for professional care when a child needs individualized support.',
+      },
+    ],
   },
   {
     id: 'relationships',
