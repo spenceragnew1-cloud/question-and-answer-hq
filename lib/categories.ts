@@ -88,6 +88,40 @@ export const CATEGORIES: CategoryDef[] = [
     label: 'Nutrition & Diet',
     description: 'Food, diet, and nutrition questions backed by research.',
     intro: 'Nutrition & Diet provides research-backed guidance on healthy eating, nutrient balance, weight management, and dietary habits. These answers distill current scientific evidence into simple, practical recommendations. Whether you\'re looking to improve your diet, manage weight, or understand how food affects your health, we break down the science into actionable advice.',
+    longIntro:
+      'Nutrition & Diet is all about using food in a practical, sustainable way to support energy, health, and performance. This category covers everyday questions like how much protein you really need, whether certain diets help or hurt, how meal timing affects appetite and weight, and what the research says about popular nutrition trends. Our goal is to translate nutrition science into clear takeaways you can use without needing a PhD in biochemistry.\n\nA lot of nutrition advice online is oversimplified or driven by extremes — ‘carbs are bad,’ ‘fat is bad,’ ‘eat this miracle food.’ In reality, healthy eating usually comes down to consistent habits: getting enough protein and fiber, eating mostly minimally processed foods, and building meals that fit your lifestyle. We highlight what high-quality research shows, and we also point out where evidence is mixed so you can make informed choices.\n\nYou’ll find answers here on weight management, recovery and muscle building, gut and metabolic health, hydration, supplements, and how nutrition interacts with sleep and stress. Whether your goal is to feel better day-to-day, improve athletic performance, or just eat with more confidence, this hub is built to make nutrition simpler, more realistic, and more evidence-based.\n\nIf you’re not sure where to start, browse the most helpful and trending questions below. Over time, small improvements — like pairing carbs with protein, eating more plants, or setting a simple meal routine — compound into big changes. This category is here to help you find those small improvements that matter most.',
+    subtopics: [
+      'Protein, muscle, and recovery',
+      'Healthy weight loss & appetite control',
+      'Carbohydrates, fats, and energy balance',
+      'Meal timing and breakfast habits',
+      'Gut health and digestive basics',
+      'Hydration and electrolytes',
+      'Supplements: what helps vs hype',
+      'Plant-based and special diets',
+    ],
+    faqs: [
+      {
+        question: 'What kinds of questions are included in Nutrition & Diet?',
+        answer:
+          'This category covers practical, research-backed answers about eating habits, weight management, macronutrients, meal timing, supplements, hydration, and popular diet approaches.',
+      },
+      {
+        question: 'Do I need to follow a specific diet to be healthy?',
+        answer:
+          'Not necessarily. Most people do best with simple, consistent habits: enough protein and fiber, mostly minimally processed foods, and a routine that matches their lifestyle.',
+      },
+      {
+        question: 'How do you decide what nutrition evidence to trust?',
+        answer:
+          'We prioritize peer-reviewed research and consensus guidance from trusted scientific institutions. When studies disagree, we explain the strengths and limits of the evidence.',
+      },
+      {
+        question: 'Is this nutritional advice personalized medical guidance?',
+        answer:
+          'No. Our answers are educational and research-based, but they can’t replace individualized guidance from a registered dietitian or medical professional.',
+      },
+    ],
   },
   {
     id: 'sleep',
