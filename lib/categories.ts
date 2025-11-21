@@ -182,6 +182,47 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Fitness & Exercise',
     description: 'Workouts, training, and staying active.',
     intro: 'Fitness & Exercise offers science-backed insights into effective workouts, training methods, and staying active at any fitness level. These answers help you build effective exercise routines, prevent injuries, and understand how different types of training affect your body. Whether you\'re just starting out or looking to optimize your current routine, we provide practical, research-supported guidance.',
+    longIntro:
+      'Fitness & Exercise covers everything from building strength and endurance to improving mobility, recovery, and overall physical well-being. This category focuses on practical, research-backed advice that helps people move better, feel stronger, and stay consistent with their training. Whether someone is new to fitness or has years of experience, the goal is to simplify the science into clear strategies that actually work in real life.\n\nTraining programs often fail not because the exercises are wrong, but because people struggle with recovery, intensity management, and long-term sustainability. Here we explore topics like proper warm-ups, progressive overload, energy systems, injury prevention, and how to structure strength or cardio sessions based on personal goals. The emphasis is always on practical application — improving technique, choosing the right exercises, and building habits that support long-term progress.\n\nWe also highlight the connection between exercise and overall health. Physical activity improves mood, metabolic function, cardiovascular health, sleep quality, and even cognitive performance. Consistent training reduces the risk of chronic disease and helps people maintain mobility and independence as they age.\n\nFor runners, lifters, athletes, or anyone pursuing an active lifestyle, this category provides guidance on form, frequency, load management, and recovery techniques. By understanding how the body adapts to physical stress, readers can train smarter, reduce injury risk, and make meaningful progress over time.',
+    subtopics: [
+      'Strength training fundamentals',
+      'Cardio and energy systems',
+      'Progressive overload',
+      'Warm-ups and mobility',
+      'Injury prevention and stability',
+      'Endurance training basics',
+      'HIIT and interval training',
+      'Recovery strategies',
+      'Exercise technique and form',
+      'Training for longevity',
+    ],
+    faqs: [
+      {
+        question: 'What topics are covered in the Fitness & Exercise category?',
+        answer:
+          'This category includes research-backed guidance on strength training, cardio, mobility, warm-ups, recovery strategies, injury prevention, and improving exercise technique.',
+      },
+      {
+        question: 'How often should I work out each week?',
+        answer:
+          'Most adults benefit from 2–4 strength sessions and 2–3 cardio sessions per week, depending on goals, training age, and recovery capacity.',
+      },
+      {
+        question: 'Do I need a gym to make progress?',
+        answer:
+          'No. You can build strength, endurance, and mobility using bodyweight exercises, household items, or minimal equipment. A gym simply provides more options.',
+      },
+      {
+        question: 'How do I know if I\'m doing an exercise correctly?',
+        answer:
+          'Proper technique should feel controlled, stable, and repeatable. If you feel pain, excessive strain, or loss of balance, adjust load, slow down, or choose a regression.',
+      },
+      {
+        question: 'Can exercise improve overall health?',
+        answer:
+          'Yes. Regular physical activity supports cardiovascular health, metabolic function, mental well-being, sleep, and long-term mobility and independence.',
+      },
+    ],
   },
   {
     id: 'parenting',
