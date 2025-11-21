@@ -9,7 +9,15 @@ export type CategoryId =
   | 'cooking_food'
   | 'money_finance'
   | 'productivity'
-  | 'mental_health';
+  | 'mental_health'
+  | 'animals_wildlife'
+  | 'education_learning'
+  | 'geography'
+  | 'history'
+  | 'hobbies_diy'
+  | 'miscellaneous'
+  | 'outdoor_nature'
+  | 'science';
 
 export interface CategoryDef {
   id: CategoryId;
@@ -59,6 +67,20 @@ export const CATEGORIES: CategoryDef[] = [
       'Energy and fatigue',
       'Healthy habit building',
     ],
+  },
+  {
+    id: 'animals_wildlife',
+    slug: 'animals_wildlife',
+    label: 'Animals & Wildlife',
+    description: 'Wildlife, conservation, and animal science explained with evidence.',
+    intro: 'Animals & Wildlife covers questions about conservation biology, animal behavior, and how humans coexist with wild species. We break down the research behind habitats, biodiversity, and responsible wildlife care so you can understand threats and rewards within a broader ecosystem perspective. Expect practical explanations of how animal science intersects with ecology, climate, and everyday choices.',
+  },
+  {
+    id: 'education_learning',
+    slug: 'education_learning',
+    label: 'Education & Learning',
+    description: 'Research-based guidance on learning strategies, skill acquisition, and education trends.',
+    intro: 'Education & Learning focuses on cognitive strategies, study habits, and modern pedagogy. These answers explore how to learn more efficiently, master new skills, and keep up with emerging education research. Whether you are a lifelong learner, parent, or educator, we present evidence-backed techniques to boost retention, motivation, and clarity.',
   },
   {
     id: 'nutrition',
@@ -129,6 +151,48 @@ export const CATEGORIES: CategoryDef[] = [
     label: 'Mental Health & Mindset',
     description: 'Mindset, stress reduction, and psychological well-being.',
     intro: 'Mental Health & Mindset addresses strategies for managing stress, building resilience, and maintaining psychological well-being. These answers draw from psychology and neuroscience to provide evidence-based approaches to mental health. We help you understand how your mind works and provide practical tools for coping with challenges, managing emotions, and cultivating a healthier mindset.',
+  },
+  {
+    id: 'geography',
+    slug: 'geography',
+    label: 'Geography',
+    description: 'Regional science, landscapes, and place-based insights.',
+    intro: 'Geography explores place-based knowledge ranging from physical landscapes to cultural geography. This category answers how geography shapes climate, infrastructure, travel, and human behavior, integrating data from maps, GIS, and spatial research to explain place-focused phenomena.',
+  },
+  {
+    id: 'history',
+    slug: 'history',
+    label: 'History',
+    description: 'Historical contexts, timelines, and evidence-based interpretations.',
+    intro: 'History provides context for our present by examining events, movements, and figures through evidence-based interpretations. We highlight sources, timelines, and the historiography behind major developments so readers can appreciate the causes, consequences, and lessons from the past.',
+  },
+  {
+    id: 'hobbies_diy',
+    slug: 'hobbies_diy',
+    label: 'Hobbies & DIY',
+    description: 'Projects, DIY instructions, and hobby-focused how-to knowledge.',
+    intro: 'Hobbies & DIY shares practical know-how for crafting, building, and enjoying hands-on projects. These answers focus on safe techniques, materials science, and workflow improvements so hobbyists can plan and complete rewarding creations with confidence.',
+  },
+  {
+    id: 'miscellaneous',
+    slug: 'miscellaneous',
+    label: 'Miscellaneous',
+    description: 'Oddball, cross-topic questions that do not fit within another category.',
+    intro: 'Miscellaneous collects interesting questions that span unique or emerging topics. When a question does not cleanly fall under a specialized category, we include it here with the same commitment to citing evidence and keeping the answer approachable.',
+  },
+  {
+    id: 'outdoor_nature',
+    slug: 'outdoor_nature',
+    label: 'Outdoor & Nature',
+    description: 'Outdoor adventure, environmental stewardship, and nature literacy.',
+    intro: 'Outdoor & Nature highlights responsible outdoor living, conservation awareness, and science-informed stewardship tips. From trail planning to ecological literacy, we share practical advice that connects you with natural environments while honoring sustainability.',
+  },
+  {
+    id: 'science',
+    slug: 'science',
+    label: 'Science & Discovery',
+    description: 'Explaining scientific findings across disciplines with clarity.',
+    intro: 'Science & Discovery distills research from biology, physics, technology, and more into digestible explanations. We contextualize breakthroughs, clarify the scientific method, and highlight how discoveries impact everyday life, including travel, technology, and the natural world.',
   },
 ];
 

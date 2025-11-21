@@ -1,8 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { generateQuestionAnswer } from '@/lib/openai';
-import { getCategoryById, type CategoryId } from '@/lib/categories';
+import { getCategoryById } from '@/lib/categories';
 
+function normalizeCategory(raw?: string): string | undefined {
+  if (!raw) return undefined;
+  const normalized = raw.trim().toLowerCase();
+  const mapping: Record<string, string> = {
+    'productivity & work': 'productivity',
+    productivity: 'productivity',
+    'fitness & exercise': 'fitness_exercise',
+    fitness: 'fitness_exercise',
+    'relationships': 'relationships',
+    'health & wellness': 'general_health',
+    'general health': 'general_health',
+    'nutrition & diet': 'nutrition',
+    sleep: 'sleep',
+    'home & cleaning': 'home_cleaning',
+    cooking: 'cooking_food',
+    'cooking & food': 'cooking_food',
+    'money & finance': 'money_finance',
+    mental: 'mental_health',
+    'mental health & mindset': 'mental_health',
+    'mental health': 'mental_health',
+    'animals & wildlife': 'animals_wildlife',
+    'education & learning': 'education_learning',
+    geography: 'geography',
+    history: 'history',
+    'hobbies & diy': 'hobbies_diy',
+    hobbies: 'hobbies_diy',
+    miscellaneous: 'miscellaneous',
+    'outdoor & nature': 'outdoor_nature',
+    outdoor: 'outdoor_nature',
+    nature: 'outdoor_nature',
+    science: 'science',
+    technology: 'science',
+    travel: 'science',
+  };
+
+  return mapping[normalized] || normalized;
+}
 const CRON_SECRET = process.env.CRON_SECRET!;
 const poolSize = 50;
 const batchSize = 5;
@@ -79,8 +116,9 @@ export async function POST(request: NextRequest) {
       try {
         console.log(`Processing idea ${idea.id}: ${idea.proposed_question}`);
 
+        const normalizedCategory = normalizeCategory(idea.category);
         // Validate category ID
-        const category = getCategoryById(idea.category);
+        const category = getCategoryById(normalizedCategory);
         if (!category) {
           console.error(`Invalid category "${idea.category}" for idea ${idea.id}. Marking as error.`);
           await supabaseAdmin
