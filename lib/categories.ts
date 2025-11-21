@@ -237,6 +237,47 @@ If you're unsure where to begin, explore the helpful questions below. You’ll f
     label: 'Relationships',
     description: 'Communication, connection, and relationship skills.',
     intro: 'Healthy relationships require effective communication, emotional intelligence, and practical skills for navigating conflict and building connection. This category explores research-backed strategies for improving relationships with partners, family, friends, and colleagues. Our answers draw from psychology and relationship science to provide actionable guidance for building stronger, more fulfilling connections.',
+    longIntro:
+      'Healthy relationships play a central role in emotional well-being, communication skills, long-term happiness, and personal growth. This category explores evidence-based insights into how people connect, resolve conflict, build trust, and support each other through different stages of life. Relationships require effort, reflection, and skill, and understanding the psychology behind them can make daily interactions more meaningful and stable.\n\nMany challenges in relationships come from misunderstandings, assumptions, and communication patterns that don’t reflect each person’s real needs. Here we focus on practical strategies backed by research: better listening habits, recognizing emotional triggers, navigating disagreements, expressing needs clearly, and strengthening bonds through small, consistent behaviors.\n\nThis category also covers modern relationship dynamics — balancing independence with partnership, navigating stress, improving emotional regulation, and creating routines that help couples stay aligned. Whether someone wants to build a stronger romantic relationship, repair communication issues, or understand how habits affect connection, this hub is designed to provide clear, grounded guidance.\n\nIf you’re not sure where to begin, explore the helpful questions below. Small improvements in communication, empathy, and awareness can significantly improve the quality of your relationships over time. This hub highlights those small, research-backed actions that make relationships healthier and more resilient.',
+    subtopics: [
+      'Communication skills and active listening',
+      'Conflict resolution strategies',
+      'Emotional regulation and patience',
+      'Building trust and connection',
+      'Healthy boundaries',
+      'Relationship stress and coping',
+      'Attachment styles and behavior patterns',
+      'Supporting partners through challenges',
+      'Maintaining long-term connection',
+      'Daily habits that strengthen relationships',
+    ],
+    faqs: [
+      {
+        question: 'What topics are included in the Relationships category?',
+        answer:
+          'This category covers communication habits, emotional intelligence, conflict resolution, trust building, boundaries, and research-backed strategies for maintaining healthy relationships.',
+      },
+      {
+        question: 'How can I improve communication with my partner?',
+        answer:
+          'Start with active listening, using clear statements about your needs, and avoiding assumptions. Small adjustments in tone and timing can make conversations more productive.',
+      },
+      {
+        question: 'What are common causes of relationship conflict?',
+        answer:
+          'Miscommunication, unmet expectations, stress, emotional triggers, and differing viewpoints are common causes. Better empathy and clarity help reduce these conflicts.',
+      },
+      {
+        question: 'Can small daily habits improve a relationship?',
+        answer:
+          'Yes. Consistent small actions — such as expressing gratitude, checking in emotionally, or sharing responsibilities — build stronger long-term connection.',
+      },
+      {
+        question: 'Is this guidance a substitute for therapy?',
+        answer:
+          'No. The information here is educational and research-based, but it does not replace personalized support from a licensed counselor or therapist.',
+      },
+    ],
   },
   {
     id: 'home_cleaning',
