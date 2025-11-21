@@ -698,6 +698,80 @@ If you’re not sure where to begin, start with the helpful and trending questio
     label: 'Geography',
     description: 'Regional science, landscapes, and place-based insights.',
     intro: 'Geography explores place-based knowledge ranging from physical landscapes to cultural geography. This category answers how geography shapes climate, infrastructure, travel, and human behavior, integrating data from maps, GIS, and spatial research to explain place-focused phenomena.',
+    longIntro: `## Understanding Geography’s Two Main Branches
+
+Geography sits at the crossroads of natural science and social science. Physical geographers study landscapes, climate, vegetation, water, and landforms; human geographers focus on population, culture, urban systems, and economic development. This category presents both perspectives so you can see how mountains channel rivers, how climate zones influence agriculture, and how people organize space through cities, borders, migrations, and infrastructure. The goal is to make geography accessible by describing the tools that geographers use—maps, satellite imagery, surveys, statistics—and how those tools reveal patterns we encounter every day.
+
+## Physical Geography: Land, Water, and Climate
+
+We examine the major drivers of physical geography: plate tectonics that raise mountains and shape ocean basins, hydrology that controls rivers and floods, soils that support ecosystems, and climate systems that govern temperature, precipitation, and extreme weather. This section clarifies how to read climate graphs, understand atmospheric circulation, and interpret the energy balance that keeps the planet in equilibrium. You’ll also explore ecosystems from tundra to rainforest, watch glaciers retreat on imagery, and decipher what makes deserts arid or coastal regions humid.
+
+## Human Geography: People, Culture, and Place
+
+Human geography investigates how populations interact with space. We cover settlement patterns, the growth of cities, cultural landscapes, language and religion geographies, and economic activities that cluster in regions. We describe how boundaries form, why nations pursue particular development strategies, and how migration reshapes demographics globally. The section also looks at political geography: the role of maps in diplomacy, the impact of colonial legacies, and how sovereignty claims evolve over contested territories.
+
+## Climate, Environment, and Sustainability
+
+Climate geography analyzes how temperature and precipitation patterns vary across latitudes and elevations, while environmental geography focuses on human impacts such as deforestation, urban heat islands, and resource extraction. We break down climate zones, explain feedback loops that amplify warming, and highlight adaptation strategies—from coastal defenses to water conservation. You’ll find evidence-based explanations of the climate-related phenomena that frequently appear in news coverage, along with how geography informs mitigation practices like land-use planning and transportation networks.
+
+## Maps, GIS, and Spatial Thinking
+
+Geographic Information Systems (GIS) and maps are the geographer’s core tools. This section demonstrates how to read different map projections, interpret choropleth and dot maps, and recognize the difference between scale, resolution, and time. We describe how GIS layers help policymakers track resources, respond to disasters, and plan transit. You’ll also discover how to gather field data, digitize historical maps, and produce simple spatial analyses that reveal relationships between variables like income and accessibility.
+
+## Population, Culture, and Global Connections
+
+Population geography focuses on growth rates, age structures, and migration flows. We analyze census data, fertility trends, aging populations, and the challenges of urbanization. Cultural geography explores how traditions, language, and identity shape landscapes—from festivals to foodways to sacred sites. This hub also considers globalization: how trade corridors, transnational corporations, and digital communication blur borders while reinforcing certain regional identities.
+
+## Landmarks, Regions, and Historical Geography
+
+Understanding countries and regions requires context. We review key physical landmarks (mountain ranges, rivers, coastlines), historical boundaries, colonial impacts, and contemporary regional blocs (like ASEAN or the European Union). You’ll find narratives about exploration, empire, and independence that explain why present-day maps look the way they do. We also highlight regional comparisons—how two neighboring countries may have wildly different population distributions, governance, or environmental policies.
+
+## Safety, Ethics, and Geography in Daily Life
+
+Geography informs how we navigate risk: choosing safe travel routes, understanding natural hazards, and preparing for disasters. This section outlines floodplain maps, earthquake zones, and evacuation planning, plus the ethics of mapping and data privacy. We also describe how everyday decisions—where you walk, where you build, how you conserve soil—have geographical dimensions.
+
+## Lifelong Geographic Curiosity
+
+If you’re unsure where to start, explore the helpful questions below. This category emphasizes curiosity, encouraging you to trace your journey on a map, question how borders were drawn, monitor climate data, or learn the vegetation zones near you. Geography is a living science, and our answers aim to make it practical, human, and grounded in evidence.`,
+    subtopics: [
+      'Physical geography and landforms',
+      'Climate systems and weather patterns',
+      'Human geography and cultural landscapes',
+      'Maps, GIS, and spatial analysis',
+      'Population dynamics and migration',
+      'Regional geography and global blocks',
+      'Natural hazards and safety planning',
+      'Environmental change and sustainability',
+      'Historical geography and imperial legacies',
+      'Data literacy with geographic tools',
+    ],
+    faqs: [
+      {
+        question: 'What does the Geography category cover?',
+        answer:
+          'This category covers physical landforms, climate, human cultures, maps and GIS, population trends, historical regions, and how geography shapes daily life.',
+      },
+      {
+        question: 'How can I learn to read maps better?',
+        answer:
+          'Start by understanding scale, projection, and legend symbols, practice interpreting choropleth or dot maps, and compare maps from different eras to see how regions change.',
+      },
+      {
+        question: 'What are key differences between physical and human geography?',
+        answer:
+          'Physical geography focuses on landscapes, climate, and ecosystems; human geography studies cultures, economies, and spatial organization. Both intersect when people modify environments.',
+      },
+      {
+        question: 'How does climate relate to geography?',
+        answer:
+          'Climate zones depend on latitude, elevation, and global circulation patterns. Geography explains how those climate factors influence vegetation, settlement, and agriculture.',
+      },
+      {
+        question: 'Is this information a substitute for expert geographic consultation?',
+        answer:
+          'No. These answers are educational and research-backed but not a replacement for professional geographic, planning, or surveying services when specialized guidance is required.',
+      },
+    ],
   },
   {
     id: 'history',
@@ -712,6 +786,80 @@ If you’re not sure where to begin, start with the helpful and trending questio
     label: 'Hobbies & DIY',
     description: 'Projects, DIY instructions, and hobby-focused how-to knowledge.',
     intro: 'Hobbies & DIY shares practical know-how for crafting, building, and enjoying hands-on projects. These answers focus on safe techniques, materials science, and workflow improvements so hobbyists can plan and complete rewarding creations with confidence.',
+    longIntro: `## Why handmade matters
+
+Hobbies and DIY are about reclaiming agency over our living spaces and creativity. This category presents research-backed guidance for projects small and large, helping you move from curiosity to execution without overwhelm. We explain how to select projects, gather materials, and build the habits that keep creativity consistent.
+
+## Planning and estimating
+
+Good projects begin with plans. We walk through how to define scope, set expectations, create budgets, and list tools. Whether you’re crafting a piece of furniture, refinishing a room, or building a garden feature, drilling down to precise measurements, time estimates, and realistic timelines prevents frustration.
+
+## Tools, materials, and workmanship
+
+Understanding materials (wood, metal, fabric, adhesives) and tools (handsaws, drills, sewing machines) is essential. This hub explains how to choose the right tool for the task, maintain blades and bits, and read safety data. We compare products, highlight the importance of clean cuts, and recommend finish selections that last.
+
+## Learning skills step-by-step
+
+From basic stitches to advanced joinery, we break skills into manageable segments. Learn how to improve grip, control sanders, or gauge tension. We also cover creative hobbies like leatherwork or ceramics, showing how to practice until muscle memory sets in.
+
+## Managing time and energy
+
+DIY competes with jobs, errands, and family. We offer routines for batching, focused windows, and mini-project sessions, along with encouragement to respect your energy level. Consistency trumps marathon sprints.
+
+## Safety and cleanup
+
+Wear PPE, manage dust, and keep kids/pets out of the workspace. We detail safe storage, ventilation tips, and emergency protocols, so you can create without straining to recover afterwards.
+
+## Troubleshooting and finishing
+
+When something goes wrong—glue dries too fast, paint bubbles, wood warps—we offer evidence-backed fixes. This includes sanding tips, patching strategies, and guidance on finishing touches that make the work feel complete.
+
+## Sustainable making
+
+We prioritize longevity. Upcycling, reusing scrap, keeping a rotating stash of materials, and purging responsibly are covered, so your hobby stays green.
+
+## Community and ongoing learning
+
+Join maker groups, share prototypes, and keep a learning journal. Collaboration accelerates growth, so we spotlight ways to teach others while staying a curious learner.`,
+    subtopics: [
+      'Project planning and time management',
+      'Tool selection and maintenance',
+      'Material science for wood, metal, and fabric',
+      'Hand and power tool safety',
+      'Interior and outdoor home projects',
+      'Creative crafts and maker workflows',
+      'Organization of supplies and storage',
+      'Troubleshooting project setbacks',
+      'Sustainable, low-waste making',
+      'Community-building and sharing projects',
+    ],
+    faqs: [
+      {
+        question: 'What projects does Hobbies & DIY cover?',
+        answer:
+          'We cover practical projects, creative crafts, small repairs, and hands-on skills with science-based techniques.',
+      },
+      {
+        question: 'How do I plan a successful DIY project?',
+        answer:
+          'Start by defining goals, listing materials, estimating time, and breaking work into manageable steps before you begin.',
+      },
+      {
+        question: 'What safety measures matter for home projects?',
+        answer:
+          'Wear protective gear, keep the workspace clean, follow manufacturer instructions, and avoid mixing chemicals unless explicitly labeled safe.',
+      },
+      {
+        question: 'How should I fix mistakes?',
+        answer:
+          'Pause, evaluate the issue, clean the area, then sand, patch, and refinish gradually while keeping the repair consistent with the original plan.',
+      },
+      {
+        question: 'Is this a substitute for professional services?',
+        answer:
+          'No. These answers are educational and research-backed but do not replace licensed professionals when a project involves structural, electrical, or plumbing work.',
+      },
+    ],
   },
   {
     id: 'miscellaneous',
