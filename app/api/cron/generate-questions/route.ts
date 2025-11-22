@@ -85,6 +85,40 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // Step 0: Check how many questions were published today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const { count: todayCount, error: countError } = await supabaseAdmin
+      .from('questions')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'published')
+      .gte('published_at', today.toISOString())
+      .lt('published_at', tomorrow.toISOString());
+
+    if (countError) {
+      throw countError;
+    }
+
+    const publishedToday = todayCount || 0;
+    const remaining = Math.max(0, batchSize - publishedToday);
+
+    if (remaining === 0) {
+      return NextResponse.json({
+        message: `Already published ${publishedToday} questions today. Target of ${batchSize} reached.`,
+        processed: 0,
+        publishedToday,
+        target: batchSize,
+        skipped: true,
+      });
+    }
+
+    console.log(
+      `Published today: ${publishedToday}, Remaining to publish: ${remaining}`
+    );
+
     // Step 1: Fetch a pool of new ideas
     const { data: pool, error: poolError } = await supabaseAdmin
       .from('ideas')
@@ -96,9 +130,47 @@ export async function POST(request: NextRequest) {
       throw poolError;
     }
 
-    // Step 2: Randomly shuffle and select batchSize ideas
-    const shuffled = shuffle(pool || []);
-    const selectedIdeas = shuffled.slice(0, batchSize);
+    if (!pool || pool.length === 0) {
+      return NextResponse.json({
+        message: 'No new ideas to process.',
+        processed: 0,
+        publishedToday,
+        target: batchSize,
+      });
+    }
+
+    // Step 2: Get all existing question texts and slugs for duplicate checking
+    const { data: existingQuestions, error: existingError } = await supabaseAdmin
+      .from('questions')
+      .select('question, slug');
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    const existingQuestionTexts = new Set(
+      (existingQuestions || []).map((q) => q.question.toLowerCase().trim())
+    );
+    const existingSlugs = new Set((existingQuestions || []).map((q) => q.slug));
+
+    // Step 3: Filter out ideas that would create duplicates
+    const uniqueIdeas = pool.filter((idea) => {
+      const normalizedText = idea.proposed_question.toLowerCase().trim();
+      return !existingQuestionTexts.has(normalizedText);
+    });
+
+    if (uniqueIdeas.length === 0) {
+      return NextResponse.json({
+        message: 'No unique ideas available (all would be duplicates).',
+        processed: 0,
+        publishedToday,
+        target: batchSize,
+      });
+    }
+
+    // Step 4: Randomly shuffle and select only the remaining needed
+    const shuffled = shuffle(uniqueIdeas);
+    const selectedIdeas = shuffled.slice(0, remaining);
 
     if (selectedIdeas.length === 0) {
       return NextResponse.json({
@@ -133,9 +205,18 @@ export async function POST(request: NextRequest) {
     console.log(`Marked ${selectedIds.length} ideas as processing`);
 
     const results = [];
+    let successfulCount = 0;
+    const targetSuccessCount = remaining;
 
-    // Step 4: Process each idea
+    // Step 4: Process each idea (stop early if we hit target)
     for (const idea of selectedIdeas) {
+      // Early exit if we've reached today's target
+      if (successfulCount >= targetSuccessCount) {
+        console.log(
+          `Reached target of ${targetSuccessCount} successful publishes. Stopping early.`
+        );
+        break;
+      }
       try {
         console.log(`Processing idea ${idea.id}: ${idea.proposed_question}`);
 
@@ -199,6 +280,60 @@ export async function POST(request: NextRequest) {
             ideaId: idea.id,
             success: false,
             error: `OpenAI error: ${openaiError.message || 'Unknown error'}`,
+          });
+          continue;
+        }
+
+        // Check for duplicate question text (case-insensitive, exact match)
+        const normalizedGeneratedQuestion = generated.question.toLowerCase().trim();
+        const { data: allQuestions, error: duplicateError } = await supabaseAdmin
+          .from('questions')
+          .select('id, question');
+
+        if (duplicateError) {
+          console.error(
+            `Error checking for duplicate question for idea ${idea.id}:`,
+            duplicateError
+          );
+          // Mark as error and continue
+          await supabaseAdmin
+            .from('ideas')
+            .update({
+              status: 'error',
+              processed_at: new Date().toISOString(),
+            })
+            .eq('id', idea.id);
+
+          results.push({
+            ideaId: idea.id,
+            success: false,
+            error: `Error checking duplicate: ${duplicateError instanceof Error ? duplicateError.message : String(duplicateError)}`,
+          });
+          continue;
+        }
+
+        const duplicateQuestion = (allQuestions || []).find(
+          (q) => q.question.toLowerCase().trim() === normalizedGeneratedQuestion
+        );
+
+        if (duplicateQuestion) {
+          console.log(
+            `Duplicate question text detected for idea ${idea.id}. Question already exists. Marking as duplicate.`
+          );
+          // Mark as duplicate and skip
+          await supabaseAdmin
+            .from('ideas')
+            .update({
+              status: 'duplicate',
+              processed_at: new Date().toISOString(),
+            })
+            .eq('id', idea.id);
+
+          results.push({
+            ideaId: idea.id,
+            success: false,
+            error: 'Duplicate question text detected',
+            skipped: true,
           });
           continue;
         }
@@ -352,6 +487,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
+        successfulCount++;
         results.push({
           ideaId: idea.id,
           questionId: question.id,
@@ -384,11 +520,14 @@ export async function POST(request: NextRequest) {
 
     const successful = results.filter((r) => r.success).length;
     const failed = results.filter((r) => !r.success).length;
+    const totalPublishedToday = publishedToday + successful;
 
     return NextResponse.json({
-      message: `Processed ${results.length} ideas (${successful} successful, ${failed} failed)`,
+      message: `Processed ${results.length} ideas (${successful} successful, ${failed} failed). Total published today: ${totalPublishedToday}/${batchSize}`,
       processed: successful,
       failed,
+      publishedToday: totalPublishedToday,
+      target: batchSize,
       batchSize,
       results,
     });
