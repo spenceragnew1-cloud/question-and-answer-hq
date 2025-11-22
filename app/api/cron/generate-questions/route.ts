@@ -40,6 +40,29 @@ function normalizeCategory(raw?: string): string | undefined {
 
   return mapping[normalized] || normalized;
 }
+
+async function buildRelatedQuestionsBlock(
+  categoryId: string,
+  excludeSlug: string
+): Promise<string> {
+  const { data: candidates } = await supabaseAdmin
+    .from('questions')
+    .select('title, slug')
+    .eq('category', categoryId)
+    .neq('slug', excludeSlug)
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  if (!candidates || candidates.length < 3) {
+    return '';
+  }
+
+  const links = candidates.slice(0, 6);
+  return [
+    '\n\n## Related Questions',
+    ...links.map((q) => `- [${q.title}](/questions/${q.slug})`),
+  ].join('\n');
+}
 const CRON_SECRET = process.env.CRON_SECRET!;
 const poolSize = 50;
 const batchSize = 5;
@@ -231,6 +254,16 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
+        // Build related questions block and append to body
+        const relatedQuestionsBlock = await buildRelatedQuestionsBlock(
+          category.id,
+          generated.slug
+        );
+        const baseBody = generated.body_markdown || '';
+        const combinedBody = [baseBody, relatedQuestionsBlock]
+          .filter(Boolean)
+          .join('\n\n');
+
         // Prepare question data - use validated category ID
         const questionData = {
           slug: generated.slug,
@@ -239,7 +272,7 @@ export async function POST(request: NextRequest) {
           verdict: generated.verdict || null,
           category: category.id, // Use validated category ID
           summary: generated.summary || null,
-          body_markdown: generated.body_markdown || null,
+          body_markdown: combinedBody || null,
           evidence_json: generated.evidence || null,
           tags: generated.tags.length > 0 ? generated.tags : ideaTags,
           sources: generated.sources || [],
