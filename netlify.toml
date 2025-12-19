@@ -8,3 +8,34 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Redirects for old/changed question slugs
+[[redirects]]
+  from = "/questions/effective-strategies-to-stop-procrastination"
+  to = "/questions/science-backed-strategies-overcome-procrastination"
+  status = 301
+
+[[redirects]]
+  from = "/questions/effective-strategies-to-overcome-procrastination"
+  to = "/questions/science-backed-strategies-overcome-procrastination"
+  status = 301
+
+[[redirects]]
+  from = "/questions/can-journaling-reduce-anxiety-levels"
+  to = "/questions/does-journaling-help-reduce-anxiety"
+  status = 301
+
+[[redirects]]
+  from = "/questions/can-journaling-reduce-anxiety-symptoms"
+  to = "/questions/does-journaling-help-reduce-anxiety"
+  status = 301
+
+[[redirects]]
+  from = "/questions/health-benefits-of-morning-cold-showers"
+  to = "/questions/health-benefits-cold-shower-morning"
+  status = 301
+
+[[redirects]]
+  from = "/questions/health-benefits-cold-showers"
+  to = "/questions/health-benefits-cold-shower-morning"
+  status = 301
+
