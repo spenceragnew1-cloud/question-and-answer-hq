@@ -48,20 +48,13 @@ npm run dev
 
 ### Netlify (via GitHub)
 
-1. **Push your code to GitHub** (if not already done):
-   ```bash
-   git add .
-   git commit -m "Configure Netlify deployment"
-   git push origin main
-   ```
-
-2. **Connect to Netlify**:
+1. **Connect to Netlify**:
    - Go to [Netlify](https://www.netlify.com/) and sign in
    - Click "Add new site" → "Import an existing project"
    - Connect your GitHub account and select this repository
    - Netlify will automatically detect the `netlify.toml` configuration
 
-3. **Configure environment variables**:
+2. **Configure environment variables**:
    - In your Netlify site dashboard, go to Site settings → Environment variables
    - Add all the environment variables listed above:
      - `NEXT_PUBLIC_SUPABASE_URL`
@@ -72,11 +65,11 @@ npm run dev
      - `CRON_SECRET`
      - `NEXT_PUBLIC_SITE_URL`
 
-4. **Deploy**:
+3. **Deploy**:
    - Netlify will automatically build and deploy your site
    - Future pushes to your main branch will trigger automatic deployments
 
-5. **Configure cron jobs** (for daily question generation):
+4. **Configure cron jobs** (for daily question generation):
    - Go to Site settings → Functions → Scheduled functions
    - Or set up a Netlify Scheduled Function or use an external service to ping your `/api/cron/generate-questions` endpoint
 
