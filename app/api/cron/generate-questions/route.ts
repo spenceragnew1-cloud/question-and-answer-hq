@@ -83,12 +83,13 @@ async function processQuestions(
   remaining: number,
   publishedToday: number
 ) {
-  const results = [];
-  let successfulCount = 0;
-  const targetSuccessCount = remaining;
+  try {
+    const results = [];
+    let successfulCount = 0;
+    const targetSuccessCount = remaining;
 
-  // Step 4: Process each idea (stop early if we hit target)
-  for (const idea of selectedIdeas) {
+    // Step 4: Process each idea (stop early if we hit target)
+    for (const idea of selectedIdeas) {
       // Early exit if we've reached today's target
       if (successfulCount >= targetSuccessCount) {
         console.log(
