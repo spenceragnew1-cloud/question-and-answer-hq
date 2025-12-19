@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 247, 247, 247;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Custom prose styles for teal theme */
+.prose-teal a {
+  color: #009688;
+  text-decoration: none;
+}
+
+.prose-teal a:hover {
+  color: #00796b;
+  text-decoration: underline;
+}
+
+.prose-teal strong {
+  color: inherit;
+  font-weight: 600;
+}
+
+.prose-teal code {
+  color: #009688;
+  background-color: #f0f9f8;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.prose-teal pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.prose-teal blockquote {
+  border-left-color: #009688;
+  color: #4b5563;
+}
+
