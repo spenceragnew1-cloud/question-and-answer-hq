@@ -77,139 +77,18 @@ function shuffle<T>(arr: T[]): T[] {
     .map(({ value }) => value);
 }
 
-export async function POST(request: NextRequest) {
-  // Verify cron secret
-  const cronSecret = request.headers.get('x-cron-secret');
-  if (cronSecret !== CRON_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+// Process questions asynchronously (called after returning 202)
+async function processQuestions(
+  selectedIdeas: any[],
+  remaining: number,
+  publishedToday: number
+) {
+  const results = [];
+  let successfulCount = 0;
+  const targetSuccessCount = remaining;
 
-  try {
-    // Step 0: Check how many questions were published today
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const { count: todayCount, error: countError } = await supabaseAdmin
-      .from('questions')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'published')
-      .gte('published_at', today.toISOString())
-      .lt('published_at', tomorrow.toISOString());
-
-    if (countError) {
-      throw countError;
-    }
-
-    const publishedToday = todayCount || 0;
-    const remaining = Math.max(0, batchSize - publishedToday);
-
-    if (remaining === 0) {
-      return NextResponse.json({
-        message: `Already published ${publishedToday} questions today. Target of ${batchSize} reached.`,
-        processed: 0,
-        publishedToday,
-        target: batchSize,
-        skipped: true,
-      });
-    }
-
-    console.log(
-      `Published today: ${publishedToday}, Remaining to publish: ${remaining}`
-    );
-
-    // Step 1: Fetch a pool of new ideas
-    const { data: pool, error: poolError } = await supabaseAdmin
-      .from('ideas')
-      .select('*')
-      .eq('status', 'new')
-      .limit(poolSize);
-
-    if (poolError) {
-      throw poolError;
-    }
-
-    if (!pool || pool.length === 0) {
-      return NextResponse.json({
-        message: 'No new ideas to process.',
-        processed: 0,
-        publishedToday,
-        target: batchSize,
-      });
-    }
-
-    // Step 2: Get all existing question texts and slugs for duplicate checking
-    const { data: existingQuestions, error: existingError } = await supabaseAdmin
-      .from('questions')
-      .select('question, slug');
-
-    if (existingError) {
-      throw existingError;
-    }
-
-    const existingQuestionTexts = new Set(
-      (existingQuestions || []).map((q) => q.question.toLowerCase().trim())
-    );
-    const existingSlugs = new Set((existingQuestions || []).map((q) => q.slug));
-
-    // Step 3: Filter out ideas that would create duplicates
-    const uniqueIdeas = pool.filter((idea) => {
-      const normalizedText = idea.proposed_question.toLowerCase().trim();
-      return !existingQuestionTexts.has(normalizedText);
-    });
-
-    if (uniqueIdeas.length === 0) {
-      return NextResponse.json({
-        message: 'No unique ideas available (all would be duplicates).',
-        processed: 0,
-        publishedToday,
-        target: batchSize,
-      });
-    }
-
-    // Step 4: Randomly shuffle and select only the remaining needed
-    const shuffled = shuffle(uniqueIdeas);
-    const selectedIdeas = shuffled.slice(0, remaining);
-
-    if (selectedIdeas.length === 0) {
-      return NextResponse.json({
-        message: 'No new ideas to process.',
-        processed: 0,
-        batchSize,
-      });
-    }
-
-    // Step 3: Immediately mark selected ideas as processing (bulk update)
-    const selectedIds = selectedIdeas.map((idea) => idea.id);
-
-    const { error: updateError } = await supabaseAdmin
-      .from('ideas')
-      .update({
-        status: 'processing',
-        processing_started_at: new Date().toISOString(),
-      })
-      .in('id', selectedIds);
-
-    if (updateError) {
-      console.error('Error marking ideas as processing:', updateError);
-      return NextResponse.json(
-        {
-          error: 'Failed to mark ideas as processing',
-          details: updateError.message,
-        },
-        { status: 500 }
-      );
-    }
-
-    console.log(`Marked ${selectedIds.length} ideas as processing`);
-
-    const results = [];
-    let successfulCount = 0;
-    const targetSuccessCount = remaining;
-
-    // Step 4: Process each idea (stop early if we hit target)
-    for (const idea of selectedIdeas) {
+  // Step 4: Process each idea (stop early if we hit target)
+  for (const idea of selectedIdeas) {
       // Early exit if we've reached today's target
       if (successfulCount >= targetSuccessCount) {
         console.log(
@@ -522,15 +401,157 @@ export async function POST(request: NextRequest) {
     const failed = results.filter((r) => !r.success).length;
     const totalPublishedToday = publishedToday + successful;
 
-    return NextResponse.json({
-      message: `Processed ${results.length} ideas (${successful} successful, ${failed} failed). Total published today: ${totalPublishedToday}/${batchSize}`,
-      processed: successful,
-      failed,
-      publishedToday: totalPublishedToday,
-      target: batchSize,
-      batchSize,
-      results,
+    console.log(
+      `Background processing complete: Processed ${results.length} ideas (${successful} successful, ${failed} failed). Total published today: ${totalPublishedToday}/${batchSize}`
+    );
+  } catch (error: any) {
+    console.error('Background processing error:', error);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  // Verify cron secret
+  const cronSecret = request.headers.get('x-cron-secret');
+  if (cronSecret !== CRON_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    // Step 0: Check how many questions were published today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const { count: todayCount, error: countError } = await supabaseAdmin
+      .from('questions')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'published')
+      .gte('published_at', today.toISOString())
+      .lt('published_at', tomorrow.toISOString());
+
+    if (countError) {
+      throw countError;
+    }
+
+    const publishedToday = todayCount || 0;
+    const remaining = Math.max(0, batchSize - publishedToday);
+
+    if (remaining === 0) {
+      return NextResponse.json({
+        message: `Already published ${publishedToday} questions today. Target of ${batchSize} reached.`,
+        processed: 0,
+        publishedToday,
+        target: batchSize,
+        skipped: true,
+      });
+    }
+
+    console.log(
+      `Published today: ${publishedToday}, Remaining to publish: ${remaining}`
+    );
+
+    // Step 1: Fetch a pool of new ideas
+    const { data: pool, error: poolError } = await supabaseAdmin
+      .from('ideas')
+      .select('*')
+      .eq('status', 'new')
+      .limit(poolSize);
+
+    if (poolError) {
+      throw poolError;
+    }
+
+    if (!pool || pool.length === 0) {
+      return NextResponse.json({
+        message: 'No new ideas to process.',
+        processed: 0,
+        publishedToday,
+        target: batchSize,
+      });
+    }
+
+    // Step 2: Get all existing question texts and slugs for duplicate checking
+    const { data: existingQuestions, error: existingError } = await supabaseAdmin
+      .from('questions')
+      .select('question, slug');
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    const existingQuestionTexts = new Set(
+      (existingQuestions || []).map((q) => q.question.toLowerCase().trim())
+    );
+    const existingSlugs = new Set((existingQuestions || []).map((q) => q.slug));
+
+    // Step 3: Filter out ideas that would create duplicates
+    const uniqueIdeas = pool.filter((idea) => {
+      const normalizedText = idea.proposed_question.toLowerCase().trim();
+      return !existingQuestionTexts.has(normalizedText);
     });
+
+    if (uniqueIdeas.length === 0) {
+      return NextResponse.json({
+        message: 'No unique ideas available (all would be duplicates).',
+        processed: 0,
+        publishedToday,
+        target: batchSize,
+      });
+    }
+
+    // Step 4: Randomly shuffle and select only the remaining needed
+    const shuffled = shuffle(uniqueIdeas);
+    const selectedIdeas = shuffled.slice(0, remaining);
+
+    if (selectedIdeas.length === 0) {
+      return NextResponse.json({
+        message: 'No new ideas to process.',
+        processed: 0,
+        batchSize,
+      });
+    }
+
+    // Step 5: Immediately mark selected ideas as processing (bulk update)
+    const selectedIds = selectedIdeas.map((idea) => idea.id);
+
+    const { error: updateError } = await supabaseAdmin
+      .from('ideas')
+      .update({
+        status: 'processing',
+        processing_started_at: new Date().toISOString(),
+      })
+      .in('id', selectedIds);
+
+    if (updateError) {
+      console.error('Error marking ideas as processing:', updateError);
+      return NextResponse.json(
+        {
+          error: 'Failed to mark ideas as processing',
+          details: updateError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    console.log(`Marked ${selectedIds.length} ideas as processing`);
+
+    // Return 202 Accepted immediately and process in background
+    // Don't await - let it run asynchronously
+    processQuestions(selectedIdeas, remaining, publishedToday).catch((error) => {
+      console.error('Background processing failed:', error);
+    });
+
+    return NextResponse.json(
+      {
+        message: `Started processing ${selectedIdeas.length} ideas. This will run in the background.`,
+        processing: selectedIdeas.length,
+        publishedToday,
+        target: batchSize,
+        status: 'accepted',
+      },
+      { status: 202 }
+    );
   } catch (error: any) {
     console.error('Cron job error:', error);
     return NextResponse.json(

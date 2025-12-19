@@ -8,6 +8,14 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Function configuration for longer-running operations
+[functions."_api_cron_generate-questions"]
+  timeout = 26  # Maximum timeout for Netlify (26 seconds)
+
+# Also configure for the Next.js handler
+[functions."___netlify-handler"]
+  timeout = 26
+
 # Redirects for old/changed question slugs
 [[redirects]]
   from = "/questions/effective-strategies-to-stop-procrastination"
