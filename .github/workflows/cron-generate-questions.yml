@@ -10,49 +10,39 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     env:
-      SITE_URL: ${{ secrets.SITE_URL }}
-      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
-      - name: Validate secrets
-        run: |
-          if [ -z "$SITE_URL" ]; then
-            echo "❌ Error: SITE_URL secret is not set"
-            exit 1
-          fi
-          if [ -z "$CRON_SECRET" ]; then
-            echo "❌ Error: CRON_SECRET secret is not set"
-            exit 1
-          fi
-          echo "✅ Secrets validated"
-          echo "SITE_URL: ${SITE_URL:0:20}..." # Show first 20 chars for debugging
-      
-      - name: Call cron endpoint
-        run: |
-          # Remove trailing slash from SITE_URL if present
-          SITE_URL_CLEAN="${SITE_URL%/}"
-          ENDPOINT_URL="$SITE_URL_CLEAN/api/cron/generate-questions"
-          echo "Calling: $ENDPOINT_URL"
-          
-          response=$(curl -s -L -w "\n%{http_code}" -X POST \
-            "$ENDPOINT_URL" \
-            -H "x-cron-secret: $CRON_SECRET" \
-            -H "Content-Type: application/json" \
-            --max-redirs 5)
-          
-          http_code=$(echo "$response" | tail -n1)
-          body=$(echo "$response" | sed '$d')
-          
-          echo "Response body: $body"
-          echo "HTTP Status: $http_code"
-          
-          if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
-            echo "✅ Success! Questions generation triggered."
-          else
-            echo "❌ Error: HTTP $http_code"
-            if [ "$http_code" -eq 308 ] || [ "$http_code" -eq 301 ] || [ "$http_code" -eq 302 ]; then
-              echo "⚠️  Redirect detected. This might indicate a URL configuration issue."
-            fi
-            exit 1
-          fi
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate environment variables
+        run: |
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ]; then
+            echo "❌ Error: NEXT_PUBLIC_SUPABASE_URL secret is not set"
+            exit 1
+          fi
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "❌ Error: SUPABASE_SERVICE_ROLE_KEY secret is not set"
+            exit 1
+          fi
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "❌ Error: OPENAI_API_KEY secret is not set"
+            exit 1
+          fi
+          echo "✅ Environment variables validated"
+
+      - name: Generate daily questions
+        run: npm run generate:daily

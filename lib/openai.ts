@@ -1,9 +1,23 @@
 import OpenAI from 'openai';
 import { slugify } from './slugify';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+// Lazy-load OpenAI client to allow environment variables to be loaded first
+let openaiClient: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openaiClient) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error(
+        'OPENAI_API_KEY environment variable is missing. Please set it in your .env.local file or environment.'
+      );
+    }
+    openaiClient = new OpenAI({
+      apiKey,
+    });
+  }
+  return openaiClient;
+}
 
 export interface GeneratedContent {
   question: string;
@@ -276,7 +290,7 @@ Generate the article following the structure above. Output your response as JSON
 
 Be thorough, accurate, and cite real sources when possible.`;
 
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAIClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       {
