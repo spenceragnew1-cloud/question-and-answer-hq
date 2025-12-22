@@ -74,6 +74,63 @@ function shuffle<T>(arr: T[]): T[] {
     .map(({ value }) => value);
 }
 
+/**
+ * Retry helper for Supabase operations that may fail transiently
+ */
+async function retrySupabaseInsert<T>(
+  operation: () => Promise<{ data: T | null; error: any }>,
+  maxAttempts: number = 3
+): Promise<{ data: T | null; error: any }> {
+  let lastError: any = null;
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const result = await operation();
+      
+      // If successful, return immediately
+      if (!result.error) {
+        return result;
+      }
+      
+      lastError = result.error;
+      
+      // Check if error is retryable (5xx errors, 500 in message, or HTML response)
+      const errorMessage = String(result.error.message || result.error);
+      const errorCode = result.error.code || '';
+      const isRetryable = 
+        errorCode.toString().startsWith('5') ||
+        errorMessage.includes('500') ||
+        errorMessage.includes('<html') ||
+        errorMessage.includes('Cloudflare') ||
+        (result.error.status && result.error.status >= 500);
+      
+      if (!isRetryable || attempt === maxAttempts) {
+        // Not retryable or last attempt - return error
+        return result;
+      }
+      
+      // Wait before retry: 1s, 2s, 4s
+      const waitTime = Math.pow(2, attempt - 1) * 1000;
+      console.log(
+        `Retry attempt ${attempt + 1}/${maxAttempts} after ${waitTime}ms delay...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+    } catch (error: any) {
+      lastError = error;
+      if (attempt === maxAttempts) {
+        return { data: null, error };
+      }
+      const waitTime = Math.pow(2, attempt - 1) * 1000;
+      console.log(
+        `Retry attempt ${attempt + 1}/${maxAttempts} after ${waitTime}ms delay...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+    }
+  }
+  
+  return { data: null, error: lastError };
+}
+
 export interface GenerateDailyQuestionsOptions {
   batchSize?: number;
   poolSize?: number;
@@ -152,11 +209,12 @@ export async function generateDailyQuestions(
     };
   }
 
-  // Step 1: Fetch a pool of new ideas
+  // Step 1: Fetch a pool of new ideas (only those that haven't generated a question yet)
   const { data: pool, error: poolError } = await supabaseAdmin
     .from('ideas')
     .select('*')
     .eq('status', 'new')
+    .is('generated_question_id', null)
     .limit(poolSize);
 
   if (poolError) {
@@ -309,7 +367,6 @@ export async function generateDailyQuestions(
           .from('ideas')
           .update({
             status: 'error',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
 
@@ -352,7 +409,6 @@ export async function generateDailyQuestions(
           .from('ideas')
           .update({
             status: 'error',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
 
@@ -388,7 +444,6 @@ export async function generateDailyQuestions(
           .from('ideas')
           .update({
             status: 'error',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
 
@@ -418,7 +473,6 @@ export async function generateDailyQuestions(
           .from('ideas')
           .update({
             status: 'duplicate',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
 
@@ -448,7 +502,6 @@ export async function generateDailyQuestions(
           .from('ideas')
           .update({
             status: 'error',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
 
@@ -469,7 +522,6 @@ export async function generateDailyQuestions(
           .from('ideas')
           .update({
             status: 'duplicate',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
 
@@ -512,16 +564,21 @@ export async function generateDailyQuestions(
         `Inserting question for idea ${idea.id} with slug: ${questionData.slug}`
       );
 
-      // Insert into questions table (auto-publish)
-      const { data: question, error: questionError } = await supabaseAdmin
-        .from('questions')
-        .insert(questionData)
-        .select()
-        .single();
+      // Insert into questions table with retry logic for transient failures
+      const { data: question, error: questionError } = await retrySupabaseInsert<any>(
+        async () => {
+          const result = await supabaseAdmin
+            .from('questions')
+            .insert(questionData)
+            .select()
+            .single();
+          return result;
+        }
+      );
 
       if (questionError) {
         console.error(
-          `Error creating question for idea ${idea.id}:`,
+          `Error creating question for idea ${idea.id} after retries:`,
           questionError
         );
         console.error(
@@ -529,19 +586,18 @@ export async function generateDailyQuestions(
           JSON.stringify(questionData, null, 2)
         );
 
-        // Mark as error
+        // Mark as error (without processed_at)
         await supabaseAdmin
           .from('ideas')
           .update({
             status: 'error',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
 
         results.push({
           ideaId: idea.id,
           success: false,
-          error: questionError.message,
+          error: questionError.message || 'Unknown error',
         });
         continue;
       }
@@ -556,7 +612,6 @@ export async function generateDailyQuestions(
         .update({
           status: 'generated',
           generated_question_id: question.id,
-          processed_at: new Date().toISOString(),
         })
         .eq('id', idea.id);
 
@@ -570,7 +625,6 @@ export async function generateDailyQuestions(
           .from('ideas')
           .update({
             status: 'generated',
-            processed_at: new Date().toISOString(),
           })
           .eq('id', idea.id);
       } else {
@@ -593,7 +647,6 @@ export async function generateDailyQuestions(
         .from('ideas')
         .update({
           status: 'error',
-          processed_at: new Date().toISOString(),
         })
         .eq('id', idea.id);
 

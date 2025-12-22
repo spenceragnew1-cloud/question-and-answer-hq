@@ -49,10 +49,15 @@ async function main() {
     }
     console.log('');
 
-    // Exit with error code if there were failures (but duplicates are ok)
-    if (result.errors > 0 || (result.failed > 0 && result.successful === 0)) {
-      console.error('❌ Generation completed with errors');
+    // Exit with error code logic: only fail if no questions were published at all
+    if (result.successful === 0 && result.failed > 0) {
+      // No questions published at all - this is a failure
+      console.error('❌ Generation failed: No questions were published');
       process.exit(1);
+    } else if (result.successful > 0 && result.failed > 0) {
+      // Partial success - log warning but exit successfully
+      console.log('⚠️  Generation completed with partial errors (some questions published)');
+      process.exit(0);
     } else if (result.successful > 0 || result.remaining === 0) {
       console.log('✅ Generation completed successfully');
       process.exit(0);
